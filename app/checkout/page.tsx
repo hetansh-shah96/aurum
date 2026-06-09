@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore, selectTotalPrice } from "@/lib/cart-store";
-import { useWalletStore } from "@/lib/wallet-store";
+import { useWalletStore, TIERS } from "@/lib/wallet-store";
+import { useCoinsStore } from "@/lib/coins-store";
 import { formatPrice } from "@/lib/products";
 
 type Step = "details" | "payment" | "confirm";
@@ -24,7 +25,8 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, clearCart } = useCartStore();
   const totalPrice = useCartStore(selectTotalPrice);
-  const { deduct } = useWalletStore();
+  const { balance: walletBalance, deduct, setTier } = useWalletStore();
+  const { balance: coins, convertToWallet } = useCoinsStore();
   const [step, setStep] = useState<Step>("details");
   const [processing, setProcessing] = useState(false);
   const [formData, setFormData] = useState({
@@ -272,33 +274,48 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <motion.button
-                    onClick={handlePay}
-                    disabled={processing}
-                    whileTap={{ scale: 0.97 }}
-                    className="btn-shine relative w-full py-5 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase overflow-hidden"
-                  >
-                    <AnimatePresence mode="wait">
-                      {processing ? (
-                        <motion.span
-                          key="processing"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="flex items-center justify-center gap-3"
-                        >
-                          <ProcessingDots />
-                          Processing your acquisition...
-                        </motion.span>
-                      ) : (
-                        <motion.span key="pay" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                          Complete Acquisition · {formatPrice(totalPrice)}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
-                  <p className="text-center text-xs text-[#444]">
-                    No real payment · Pure simulation · 100% free dopamine
-                  </p>
+                  {walletBalance < totalPrice ? (
+                    <WalletGate
+                      walletBalance={walletBalance}
+                      totalPrice={totalPrice}
+                      coins={coins}
+                      onConvert={(amount) => {
+                        convertToWallet(amount);
+                        useWalletStore.setState((s) => ({ balance: s.balance + amount }));
+                      }}
+                      onUpgradeTier={setTier}
+                    />
+                  ) : (
+                    <>
+                      <motion.button
+                        onClick={handlePay}
+                        disabled={processing}
+                        whileTap={{ scale: 0.97 }}
+                        className="btn-shine relative w-full py-5 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase overflow-hidden"
+                      >
+                        <AnimatePresence mode="wait">
+                          {processing ? (
+                            <motion.span
+                              key="processing"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="flex items-center justify-center gap-3"
+                            >
+                              <ProcessingDots />
+                              Processing your acquisition...
+                            </motion.span>
+                          ) : (
+                            <motion.span key="pay" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                              Complete Acquisition · {formatPrice(totalPrice)}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </motion.button>
+                      <p className="text-center text-xs text-[#444]">
+                        No real payment · Pure simulation · 100% free dopamine
+                      </p>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -351,6 +368,110 @@ function InputField({
         className="w-full bg-[#111] border border-[#2a2a2a] text-[#F5F0E8] px-4 py-3 text-sm rounded-sm outline-none focus:border-[#C9A84C] transition-colors placeholder:text-[#333]"
       />
     </div>
+  );
+}
+
+function WalletGate({
+  walletBalance, totalPrice, coins, onConvert, onUpgradeTier,
+}: {
+  walletBalance: number;
+  totalPrice: number;
+  coins: number;
+  onConvert: (amount: number) => void;
+  onUpgradeTier: (tier: "millionaire" | "old-money" | "billionaire") => void;
+}) {
+  const shortfall = totalPrice - walletBalance;
+  const canConvert = coins >= 10_000;
+  const maxConvert = Math.min(coins, shortfall + 10_000);
+  const [converting, setConverting] = useState(false);
+
+  const handleConvert = () => {
+    if (!canConvert) return;
+    const amt = Math.min(coins, Math.ceil(shortfall / 10_000) * 10_000);
+    onConvert(amt);
+    setConverting(true);
+    setTimeout(() => setConverting(false), 1500);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="border border-amber-500/30 rounded-sm overflow-hidden"
+    >
+      {/* Header */}
+      <div className="bg-amber-500/5 px-5 py-4 border-b border-amber-500/20 flex items-center gap-3">
+        <span className="text-2xl">🔒</span>
+        <div>
+          <p className="text-sm font-semibold text-amber-400">Wallet Balance Insufficient</p>
+          <p className="text-xs text-[#555] mt-0.5">
+            You need {formatPrice(shortfall)} more to complete this acquisition
+          </p>
+        </div>
+      </div>
+
+      <div className="p-5 space-y-4">
+        {/* Balance vs needed */}
+        <div className="grid grid-cols-2 gap-3 text-center">
+          <div className="border border-[#2a2a2a] rounded-sm p-3">
+            <p className="text-[10px] text-[#555] uppercase tracking-widest mb-1">Your Balance</p>
+            <p className="font-display text-lg text-[#888]">{formatPrice(walletBalance)}</p>
+          </div>
+          <div className="border border-red-500/30 rounded-sm p-3 bg-red-500/5">
+            <p className="text-[10px] text-[#555] uppercase tracking-widest mb-1">Cart Total</p>
+            <p className="font-display text-lg text-red-400">{formatPrice(totalPrice)}</p>
+          </div>
+        </div>
+
+        {/* Option 1: Convert coins */}
+        <div className="border border-[#2a2a2a] rounded-sm p-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-[#F5F0E8]">Convert AURUM Coins</p>
+            <span className="text-xs text-[#C9A84C]">₳{coins.toLocaleString("en-IN")}</span>
+          </div>
+          {canConvert ? (
+            <button
+              onClick={handleConvert}
+              className={`btn-shine w-full py-2.5 text-xs font-semibold tracking-widest uppercase transition-colors ${
+                converting
+                  ? "bg-green-500/10 border border-green-500 text-green-400"
+                  : "bg-[#C9A84C] text-[#080808] hover:bg-[#E8D5A3]"
+              }`}
+            >
+              {converting ? "✓ Coins Added to Wallet!" : `Convert ₳${Math.min(coins, Math.ceil(shortfall / 10_000) * 10_000).toLocaleString("en-IN")} → ${formatPrice(Math.min(coins, Math.ceil(shortfall / 10_000) * 10_000))}`}
+            </button>
+          ) : (
+            <div className="text-center py-2.5 border border-[#2a2a2a] rounded-sm">
+              <p className="text-xs text-[#555]">Not enough coins (min ₳10,000)</p>
+              <p className="text-[10px] text-[#444] mt-0.5">Claim your daily reward to earn more →</p>
+            </div>
+          )}
+        </div>
+
+        {/* Option 2: Upgrade wallet tier */}
+        <div className="border border-[#2a2a2a] rounded-sm p-4">
+          <p className="text-xs font-semibold text-[#F5F0E8] mb-3">Or upgrade your wallet tier</p>
+          <div className="space-y-2">
+            {(Object.entries(TIERS) as [keyof typeof TIERS, { label: string; balance: number }][])
+              .filter(([, t]) => t.balance > walletBalance)
+              .map(([key, t]) => (
+                <button
+                  key={key}
+                  onClick={() => onUpgradeTier(key)}
+                  className="w-full flex items-center justify-between px-3 py-2 border border-[#C9A84C]/30 bg-[#C9A84C]/5 text-xs hover:bg-[#C9A84C]/10 transition-colors rounded-sm"
+                >
+                  <span className="text-[#C9A84C] font-semibold">{t.label}</span>
+                  <span className="text-[#888]">{formatPrice(t.balance)}</span>
+                </button>
+              ))}
+          </div>
+        </div>
+
+        <p className="text-center text-[10px] text-[#333]">
+          Come back after claiming your daily coins — ₳ converts to ₹ at 1:1
+        </p>
+      </div>
+    </motion.div>
   );
 }
 
