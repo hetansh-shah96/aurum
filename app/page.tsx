@@ -1,65 +1,231 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { PRODUCTS, CATEGORIES, formatPrice } from "@/lib/products";
+import { ProductCard } from "@/components/ProductCard";
+import { LiveViewers } from "@/components/LiveViewers";
+
+const FEATURED = PRODUCTS.filter((p) => p.exclusive || p.badge).slice(0, 3);
+const TRENDING = PRODUCTS.slice(0, 6);
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen">
+      {/* Hero */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1492326195702-d990c05bc75b?auto=format&fit=crop&w=1920&q=80"
+            alt="Luxury"
+            fill
+            className="object-cover opacity-30"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#080808]/60 via-[#080808]/40 to-[#080808]" />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+          <motion.p
+            initial={{ opacity: 0, letterSpacing: "0.5em" }}
+            animate={{ opacity: 1, letterSpacing: "0.35em" }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="text-[#C9A84C] text-xs tracking-[0.35em] uppercase mb-6 font-light"
+          >
+            The World's Finest Acquisitions
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.3 }}
+            className="font-display text-6xl md:text-8xl font-semibold leading-none mb-6"
+          >
+            <span className="text-[#F5F0E8]">Indulge</span>
+            <br />
+            <span className="text-gold-gradient">Without Limits</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="text-[#888] text-lg md:text-xl max-w-xl mx-auto mb-3 leading-relaxed"
+          >
+            Browse the world's most exclusive luxury goods. Add to cart. Feel the rush.
+            Nothing gets delivered — the dopamine is free.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="text-[#555] text-sm mb-10 tracking-wide"
+          >
+            ✦ No real charges ✦ No actual delivery ✦ Pure luxury simulation
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <Link
+              href="/shop"
+              className="btn-shine px-10 py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors duration-200"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Enter the Collection
+            </Link>
+            <button
+              onClick={() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" })}
+              className="px-10 py-4 border border-[#2a2a2a] text-[#888] text-sm tracking-[0.2em] uppercase hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors duration-200"
             >
-              Learning
-            </a>{" "}
-            center.
+              Explore Categories
+            </button>
+          </motion.div>
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
+          <span className="text-[10px] text-[#555] tracking-widest uppercase">Scroll</span>
+          <div className="w-px h-8 bg-gradient-to-b from-[#C9A84C] to-transparent" />
+        </motion.div>
+      </section>
+
+      {/* Stats bar */}
+      <section className="border-y border-[#2a2a2a] bg-[#0e0e0e]">
+        <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { value: "$2.1B+", label: "Total value curated" },
+            { value: "47,000+", label: "Items indulged" },
+            { value: "189", label: "Countries browsing" },
+            { value: "100%", label: "Satisfaction rate" },
+          ].map((stat) => (
+            <div key={stat.label} className="text-center">
+              <p className="font-display text-2xl text-gold-gradient font-semibold">{stat.value}</p>
+              <p className="text-[10px] text-[#555] tracking-widest uppercase mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section id="categories" className="max-w-7xl mx-auto px-6 py-20">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-3">Browse by Category</p>
+          <h2 className="font-display text-4xl md:text-5xl text-[#F5F0E8]">The Collection</h2>
+        </motion.div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {CATEGORIES.map((cat, i) => (
+            <motion.div
+              key={cat.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+            >
+              <Link
+                href={`/shop?category=${cat.id}`}
+                className="group flex flex-col items-center gap-3 p-6 border border-[#2a2a2a] rounded-sm hover:border-[#C9A84C]/50 hover:bg-[#111] transition-all duration-200 text-center"
+              >
+                <span className="text-3xl">{cat.icon}</span>
+                <span className="text-xs text-[#888] tracking-widest uppercase group-hover:text-[#C9A84C] transition-colors">
+                  {cat.label}
+                </span>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Featured / Exclusive */}
+      <section className="max-w-7xl mx-auto px-6 pb-20">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-2">Curated Selection</p>
+            <h2 className="font-display text-4xl text-[#F5F0E8]">Exclusive Pieces</h2>
+          </div>
+          <Link href="/shop" className="text-xs text-[#555] tracking-widest uppercase hover:text-[#C9A84C] transition-colors hidden md:block">
+            View All →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {FEATURED.map((product) => (
+            <div key={product.id} className="relative">
+              <ProductCard product={product} />
+              <div className="absolute top-20 right-4">
+                <LiveViewers productId={product.id} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Trending */}
+      <section className="bg-[#0a0a0a] border-t border-[#2a2a2a] py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-3">Most Desired</p>
+            <h2 className="font-display text-4xl md:text-5xl text-[#F5F0E8]">Trending Now</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {TRENDING.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          <div className="text-center mt-12">
+            <Link
+              href="/shop"
+              className="btn-shine inline-block px-12 py-4 border border-[#C9A84C] text-[#C9A84C] text-sm tracking-[0.2em] uppercase hover:bg-[#C9A84C] hover:text-[#080808] transition-colors duration-200"
+            >
+              View Full Collection
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="py-24 px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4">A Guilt-Free Indulgence</p>
+          <h2 className="font-display text-4xl md:text-5xl text-[#F5F0E8] mb-4">
+            You deserve the best.
+          </h2>
+          <p className="text-[#555] text-lg mb-8 max-w-md mx-auto">
+            Fill your cart with the finest things in the world. Checkout. Celebrate. Nothing shipped. Just the feeling.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/shop"
+            className="btn-shine inline-block px-12 py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors duration-200"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Start Shopping
+          </Link>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-[#2a2a2a] py-8 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <span className="font-display text-xl tracking-[0.3em] text-gold-gradient">AURUM</span>
+          <p className="text-[10px] text-[#444] tracking-widest uppercase text-center">
+            A dopamine simulation experience · No real purchases · Just the joy of luxury
+          </p>
+          <p className="text-[10px] text-[#333]">© 2026 AURUM</p>
         </div>
-      </main>
+      </footer>
     </div>
   );
 }

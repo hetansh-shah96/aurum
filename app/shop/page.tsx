@@ -1,0 +1,102 @@
+"use client";
+
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { PRODUCTS, CATEGORIES, Category } from "@/lib/products";
+import { ProductCard } from "@/components/ProductCard";
+import { motion } from "framer-motion";
+
+function ShopContent() {
+  const searchParams = useSearchParams();
+  const urlCategory = searchParams.get("category") as Category | null;
+  const [active, setActive] = useState<Category | "all">(urlCategory ?? "all");
+  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
+
+  const filtered = PRODUCTS.filter((p) => active === "all" || p.category === active);
+  const sorted = [...filtered].sort((a, b) => {
+    if (sortBy === "price-asc") return a.price - b.price;
+    if (sortBy === "price-desc") return b.price - a.price;
+    return 0;
+  });
+
+  return (
+    <div className="min-h-screen pt-24 pb-20">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-6 mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-2">The Full Collection</p>
+          <h1 className="font-display text-5xl md:text-6xl text-[#F5F0E8] mb-2">Shop</h1>
+          <p className="text-[#555] text-sm">{sorted.length} pieces available</p>
+        </motion.div>
+      </div>
+
+      {/* Filters */}
+      <div className="border-y border-[#2a2a2a] bg-[#0e0e0e] sticky top-16 z-30">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 overflow-x-auto">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => setActive("all")}
+              className={`px-4 py-1.5 text-xs tracking-widest uppercase rounded-sm transition-all ${
+                active === "all"
+                  ? "bg-[#C9A84C] text-[#080808] font-semibold"
+                  : "border border-[#2a2a2a] text-[#888] hover:border-[#C9A84C] hover:text-[#C9A84C]"
+              }`}
+            >
+              All
+            </button>
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActive(cat.id)}
+                className={`px-4 py-1.5 text-xs tracking-widest uppercase rounded-sm transition-all whitespace-nowrap ${
+                  active === cat.id
+                    ? "bg-[#C9A84C] text-[#080808] font-semibold"
+                    : "border border-[#2a2a2a] text-[#888] hover:border-[#C9A84C] hover:text-[#C9A84C]"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="bg-[#111] border border-[#2a2a2a] text-[#888] text-xs px-3 py-1.5 rounded-sm outline-none focus:border-[#C9A84C] flex-shrink-0"
+          >
+            <option value="default">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Grid */}
+      <div className="max-w-7xl mx-auto px-6 pt-10">
+        {sorted.length === 0 ? (
+          <div className="text-center py-20 text-[#555]">No items found.</div>
+        ) : (
+          <motion.div
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            {sorted.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen pt-24 flex items-center justify-center text-[#555]">Loading collection...</div>}>
+      <ShopContent />
+    </Suspense>
+  );
+}
