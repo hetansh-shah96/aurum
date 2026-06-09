@@ -154,9 +154,9 @@ export const PRODUCTS: Product[] = [
     brand: "Louis Vuitton",
     price: 3_04_000,       // $3,200
     category: "leather-goods",
-    image: "https://images.unsplash.com/photo-1575844611898-ac3b5e71e960?auto=format&fit=crop&w=800&q=90",
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=90",
     images: [
-      "https://images.unsplash.com/photo-1575844611898-ac3b5e71e960?auto=format&fit=crop&w=800&q=90",
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=90",
     ],
     description: "The quintessential travel companion since 1930. Supple, spacious, and unmistakably Louis Vuitton.",
     details: [
@@ -371,8 +371,8 @@ export const PRODUCTS: Product[] = [
     brand: "Balenciaga",
     price: 85_500,            // ~$900
     category: "shoes",
-    image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=90"],
     description: "The sneaker that redefined bulky footwear as high fashion. Triple-layered sole, unmistakable silhouette.",
     details: ["Mesh & leather upper", "Triple-layer rubber sole", "Leather lining", "Logo embossed insole", "Made in Italy"],
     rating: 4.7,
@@ -385,8 +385,8 @@ export const PRODUCTS: Product[] = [
     brand: "Jimmy Choo",
     price: 1_14_000,          // ~$1,200
     category: "shoes",
-    image: "https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=800&q=90"],
     description: "Dazzling crystal-embellished straps on a sleek stiletto. Worn on red carpets from Cannes to Mumbai.",
     details: ["Crystal mesh upper", "95mm heel", "Leather lining", "Rubber sole", "Made in Italy"],
     rating: 4.9,
@@ -401,8 +401,8 @@ export const PRODUCTS: Product[] = [
     brand: "Tom Ford",
     price: 95_000,            // ~$1,000
     category: "shoes",
-    image: "https://images.unsplash.com/photo-1533867617858-e7b97e060509?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1533867617858-e7b97e060509?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=90"],
     description: "Quiet luxury perfected. The Jago Derby in crocodile-embossed leather is the shoe for those who know.",
     details: ["Crocodile-embossed calfskin", "Leather sole", "Hand-welted construction", "Made in Italy", "Dust bag included"],
     rating: 4.8,
@@ -415,8 +415,8 @@ export const PRODUCTS: Product[] = [
     brand: "Dior × Nike",
     price: 3_80_000,          // ~$4,000 resale
     category: "shoes",
-    image: "https://images.unsplash.com/photo-1556906781-9a412961a28c?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1556906781-9a412961a28c?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=90"],
     description: "The most coveted sneaker collaboration in history. 8,000 pairs. Sold out in 43 seconds. Yours now — virtually.",
     details: ["Oblique canvas upper", "Nike Air cushioning", "Dior logo throughout", "Certificate of authenticity", "1 of 8,000"],
     rating: 5.0,
@@ -433,8 +433,8 @@ export const PRODUCTS: Product[] = [
     brand: "Richard Mille",
     price: 1_33_00_000,       // ~$1.4M
     category: "timepieces",
-    image: "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=800&q=90"],
     description: "The most technically complex wristwatch ever made. Worn by Rafael Nadal on the tennis court. Enough said.",
     details: ["Titanium case, 49mm", "Calibre RMAC3 movement", "Annual calendar + flyback chronograph", "Sapphire crystal case back", "NTPT carbon dial"],
     rating: 5.0,
@@ -449,8 +449,8 @@ export const PRODUCTS: Product[] = [
     brand: "Omega",
     price: 5_89_000,          // ~$6,200
     category: "timepieces",
-    image: "https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1619134778706-7015533a6150?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1619134778706-7015533a6150?auto=format&fit=crop&w=800&q=90"],
     description: "The watch that went to the Moon in 1969. NASA-certified. Worn by every Apollo astronaut. A legend.",
     details: ["42mm stainless steel case", "Calibre 3861 Co-Axial", "Hesalite crystal", "Tachymetre bezel", "Black dial"],
     rating: 4.9,
@@ -464,8 +464,8 @@ export const PRODUCTS: Product[] = [
     brand: "Jaeger-LeCoultre",
     price: 19_00_000,         // ~$20,000
     category: "timepieces",
-    image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=800&q=90"],
     description: "Art Deco made timeless. The Reverso's swivelling case reveals a second dial — two time zones, one masterpiece.",
     details: ["Manual winding", "Rectangular swivelling case", "Two dials — day & night", "Calibre 854A/2", "Alligator strap"],
     rating: 4.8,
@@ -480,8 +480,8 @@ export const PRODUCTS: Product[] = [
     brand: "Bottega Veneta",
     price: 3_80_000,          // ~$4,000
     category: "leather-goods",
-    image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=90"],
     description: "The bag that made logoless luxury cool again. Woven lambskin so soft you'll want to sleep with it.",
     details: ["Intrecciato woven lambskin", "Knotted handle", "Suede lining", "One interior slip pocket", "Made in Italy"],
     rating: 4.9,
@@ -523,8 +523,8 @@ export const PRODUCTS: Product[] = [
     brand: "Dior",
     price: 4_75_000,          // ~$5,000
     category: "leather-goods",
-    image: "https://images.unsplash.com/photo-1575844611898-ac3b5e71e960?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1575844611898-ac3b5e71e960?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=90"],
     description: "Princess Diana's favourite. The Lady Dior's cannage stitching and charm-adorned handles are instantly recognisable worldwide.",
     details: ["Cannage lambskin", "Gold-tone D.I.O.R. charms", "Two handles + removable strap", "Zip closure", "Made in Italy"],
     rating: 4.9,
@@ -568,8 +568,8 @@ export const PRODUCTS: Product[] = [
     brand: "Van Cleef & Arpels",
     price: 11_40_000,         // ~$12,000
     category: "jewelry",
-    image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=90",
-    images: ["https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=90"],
+    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=90",
+    images: ["https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=90"],
     description: "The four-leaf clover motif that has graced royalty since 1968. Fortune, health, love, success — all yours.",
     details: ["18K yellow gold", "Malachite clover motif", "Gold bead border", "42cm chain", "VCA certificate of authenticity"],
     rating: 5.0,

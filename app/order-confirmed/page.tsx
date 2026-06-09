@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { useWalletStore } from "@/lib/wallet-store";
+import { useCoinsStore } from "@/lib/coins-store";
 import { formatPrice } from "@/lib/products";
 
 const ORDER_ID = () =>
@@ -67,6 +68,7 @@ export default function OrderConfirmedPage() {
   const [notifStatus, setNotifStatus] = useState<"idle" | "granted" | "denied">("idle");
   const fired = useRef(false);
   const { replenish, spent } = useWalletStore();
+  const { earnCheckout } = useCoinsStore();
 
   // Confetti on mount
   useEffect(() => {
@@ -86,7 +88,8 @@ export default function OrderConfirmedPage() {
 
     // Replenish wallet after "spending"
     setTimeout(() => replenish(), 5000);
-  }, [replenish]);
+    earnCheckout();
+  }, [replenish, earnCheckout]);
 
   // Animate delivery steps (1 per 2s for demo feel)
   useEffect(() => {

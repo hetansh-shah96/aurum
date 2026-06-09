@@ -5,6 +5,7 @@ import { useCartStore, selectTotalCount } from "@/lib/cart-store";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { WalletBadge } from "./WalletBadge";
+import { CoinsDisplay } from "./CoinsDisplay";
 
 const NAV_LINKS = [
   { label: "Shop All", href: "/shop" },
@@ -77,6 +78,11 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Coins display — desktop only */}
+            <div className="hidden md:block">
+              <CoinsDisplay />
+            </div>
+
             {/* Wallet — hidden on very small screens, shown sm+ */}
             <div className="hidden sm:block">
               <WalletBadge />
