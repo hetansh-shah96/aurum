@@ -1,14 +1,15 @@
 "use client";
 
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, selectTotalPrice, selectTotalCount } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/products";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
 export function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice, totalCount } =
-    useCartStore();
+  const { items, isOpen, closeCart, removeItem, updateQuantity } = useCartStore();
+  const totalPrice = useCartStore(selectTotalPrice);
+  const totalCount = useCartStore(selectTotalCount);
 
   return (
     <AnimatePresence>

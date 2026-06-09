@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, selectTotalCount } from "@/lib/cart-store";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { WalletBadge } from "./WalletBadge";
@@ -9,14 +9,16 @@ import { WalletBadge } from "./WalletBadge";
 const NAV_LINKS = [
   { label: "Shop All", href: "/shop" },
   { label: "Timepieces", href: "/shop?category=timepieces" },
+  { label: "Shoes", href: "/shop?category=shoes" },
+  { label: "Leather Goods", href: "/shop?category=leather-goods" },
   { label: "Automobiles", href: "/shop?category=automobiles" },
   { label: "Jewelry", href: "/shop?category=jewelry" },
-  { label: "Leather Goods", href: "/shop?category=leather-goods" },
   { label: "Yachts & Jets", href: "/shop?category=yachts" },
 ];
 
 export function Navbar() {
-  const { totalCount, openCart } = useCartStore();
+  const { openCart } = useCartStore();
+  const totalCount = useCartStore(selectTotalCount);
   const [scrolled, setScrolled] = useState(false);
   const [prevCount, setPrevCount] = useState(0);
   const [bump, setBump] = useState(false);

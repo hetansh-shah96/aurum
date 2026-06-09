@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, selectTotalCount } from "@/lib/cart-store";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { totalCount, openCart } = useCartStore();
+  const { openCart } = useCartStore();
+  const totalCount = useCartStore(selectTotalCount);
 
   const links = [
     {

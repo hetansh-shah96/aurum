@@ -1,14 +1,14 @@
 "use client";
 
 import { useWalletStore, TIERS, Tier } from "@/lib/wallet-store";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, selectTotalPrice } from "@/lib/cart-store";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { formatPrice } from "@/lib/products";
 
 export function WalletBadge() {
   const { balance, tier, setTier, replenish, spent } = useWalletStore();
-  const { totalPrice } = useCartStore();
+  const totalPrice = useCartStore(selectTotalPrice);
   const [open, setOpen] = useState(false);
   const [prevBalance, setPrevBalance] = useState(balance);
   const [flash, setFlash] = useState(false);

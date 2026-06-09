@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, selectTotalPrice } from "@/lib/cart-store";
 import { useWalletStore } from "@/lib/wallet-store";
 import { formatPrice } from "@/lib/products";
 
@@ -22,7 +22,8 @@ const CARD_FORMATS = [
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalPrice, clearCart } = useCartStore();
+  const { items, clearCart } = useCartStore();
+  const totalPrice = useCartStore(selectTotalPrice);
   const { deduct } = useWalletStore();
   const [step, setStep] = useState<Step>("details");
   const [processing, setProcessing] = useState(false);
@@ -31,7 +32,7 @@ export default function CheckoutPage() {
     email: "",
     address: "",
     city: "",
-    country: "United States",
+    country: "India",
     card: CARD_FORMATS[Math.floor(Math.random() * CARD_FORMATS.length)],
     expiry: "12/28",
     cvv: "•••",
@@ -153,7 +154,7 @@ export default function CheckoutPage() {
                           onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                           className="w-full bg-[#111] border border-[#2a2a2a] text-[#F5F0E8] px-4 py-3 text-sm rounded-sm outline-none focus:border-[#C9A84C] transition-colors"
                         >
-                          {["United States", "United Kingdom", "Monaco", "UAE", "Switzerland", "France", "Japan", "Singapore"].map((c) => (
+                          {["India", "United States", "United Kingdom", "UAE", "Singapore", "Monaco", "Switzerland", "France", "Japan", "Australia", "Canada"].map((c) => (
                             <option key={c}>{c}</option>
                           ))}
                         </select>
