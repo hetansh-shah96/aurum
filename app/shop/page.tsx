@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { PRODUCTS, CATEGORIES, Category, formatPrice } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
+import { useWalletStore, selectPlayerRank, RANKS } from "@/lib/wallet-store";
 import { motion, AnimatePresence } from "framer-motion";
 
 const TICKER_EVENTS = [
@@ -77,6 +78,59 @@ function FomoStrip() {
   );
 }
 
+function RankBanner() {
+  const playerRank = useWalletStore(selectPlayerRank);
+  const lifetimeSpent = useWalletStore((s) => s.lifetimeSpent);
+  const nextRank = RANKS.find((r) => r.level === playerRank.level + 1);
+  const lockedCount = PRODUCTS.filter((p) => {
+    const { getRequiredRank } = require("@/lib/wallet-store");
+    return getRequiredRank(p.price).level > playerRank.level;
+  }).length;
+
+  const progress = nextRank
+    ? Math.min(1, (lifetimeSpent - playerRank.threshold) / (nextRank.threshold - playerRank.threshold))
+    : 1;
+
+  return (
+    <div className="border-b border-[#1a1a1a] bg-[#0a0a0a]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-base" style={{ color: playerRank.color }}>{playerRank.icon}</span>
+          <span className="text-xs font-semibold" style={{ color: playerRank.color }}>{playerRank.name}</span>
+        </div>
+
+        {nextRank ? (
+          <div className="flex-1 flex items-center gap-3">
+            <div className="flex-1 h-1.5 bg-[#222] rounded-full overflow-hidden">
+              <motion.div
+                animate={{ width: `${progress * 100}%` }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="h-full rounded-full"
+                style={{ background: `linear-gradient(90deg, ${playerRank.color}, ${nextRank.color})` }}
+              />
+            </div>
+            <span className="text-[10px] text-[#555] flex-shrink-0 hidden sm:inline">
+              {formatPrice(Math.max(0, nextRank.threshold - lifetimeSpent))} to{" "}
+              <span style={{ color: nextRank.color }}>{nextRank.name}</span>
+            </span>
+          </div>
+        ) : (
+          <span className="text-[10px] text-[#C9A84C] flex-shrink-0">✦ Max rank — all items unlocked</span>
+        )}
+
+        {lockedCount > 0 && (
+          <div className="flex-shrink-0 flex items-center gap-1.5">
+            <span className="text-[9px] text-[#555] hidden sm:inline">
+              🔒 {lockedCount} items locked
+            </span>
+            <span className="text-[9px] text-[#555] sm:hidden">🔒 {lockedCount}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ShopContent() {
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get("category") as Category | null;
@@ -93,6 +147,7 @@ function ShopContent() {
   return (
     <div className="min-h-screen pt-16">
       <FomoStrip />
+      <RankBanner />
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-6 pt-10 mb-8">

@@ -148,8 +148,9 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed top-16 left-0 right-0 z-40 bg-[#080808]/98 backdrop-blur-md border-b border-[#2a2a2a] md:hidden"
           >
-            {/* Wallet row on mobile */}
-            <div className="px-5 pt-4 pb-2 border-b border-[#2a2a2a]">
+            {/* Wallet + coins row on mobile */}
+            <div className="px-5 pt-4 pb-3 border-b border-[#2a2a2a] flex items-center gap-3">
+              <CoinsDisplay />
               <WalletBadge />
             </div>
             <nav className="px-5 py-4 flex flex-col gap-1">
