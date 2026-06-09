@@ -7,6 +7,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { CoinsToastProvider } from "@/components/CoinsToast";
 import { DailyClaimModal } from "@/components/DailyClaimModal";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
+import { RankUpModal } from "@/components/RankUpModal";
 
 export const metadata: Metadata = {
   title: "AURUM — Luxury Without Limits",
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="pb-16 md:pb-0">{children}</main>
           <BottomNav />
           <LiveActivityFeed />
+          <RankUpModal />
         </CoinsToastProvider>
       </body>
     </html>

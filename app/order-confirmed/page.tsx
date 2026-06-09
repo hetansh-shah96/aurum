@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { useWalletStore } from "@/lib/wallet-store";
 import { useCoinsStore } from "@/lib/coins-store";
+import { CursedModal } from "@/components/CursedModal";
+import { useCoinsToast } from "@/components/CoinsToast";
 import { formatPrice } from "@/lib/products";
 
 const ORDER_ID = () =>
@@ -68,7 +70,9 @@ export default function OrderConfirmedPage() {
   const [notifStatus, setNotifStatus] = useState<"idle" | "granted" | "denied">("idle");
   const fired = useRef(false);
   const { replenish, spent } = useWalletStore();
-  const { earnCheckout } = useCoinsStore();
+  const { earnCheckout, balance: coinBalance } = useCoinsStore();
+  const { showToast } = useCoinsToast();
+  const [cursedProductId, setCursedProductId] = useState<string | null>(null);
 
   // Confetti on mount
   useEffect(() => {
@@ -88,8 +92,20 @@ export default function OrderConfirmedPage() {
 
     // Replenish wallet after "spending"
     setTimeout(() => replenish(), 5000);
-    earnCheckout();
-  }, [replenish, earnCheckout]);
+    const result = earnCheckout();
+    showToast(result.coins, result.label, result.isBonus);
+
+    // Check for cursed items via URL
+    const params = new URLSearchParams(window.location.search);
+    const cursed = params.get("cursed");
+    if (cursed) {
+      setTimeout(() => {
+        setCursedProductId(cursed);
+        // Drain all coins after showing the modal
+        useCoinsStore.setState({ balance: 0 });
+      }, 3500);
+    }
+  }, [replenish, earnCheckout, showToast]);
 
   // Animate delivery steps (1 per 2s for demo feel)
   useEffect(() => {
@@ -148,6 +164,7 @@ export default function OrderConfirmedPage() {
   };
 
   return (
+    <>
     <div className="min-h-screen pt-20 pb-20 px-4 sm:px-6">
       <div className="max-w-2xl mx-auto">
         {/* Success banner */}
@@ -390,5 +407,11 @@ export default function OrderConfirmedPage() {
         </motion.p>
       </div>
     </div>
+
+    <CursedModal
+      productId={cursedProductId}
+      onClose={() => setCursedProductId(null)}
+    />
+    </>
   );
 }

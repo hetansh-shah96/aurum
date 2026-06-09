@@ -14,6 +14,7 @@ export interface Product {
   inStock: number;
   badge?: string;
   exclusive?: boolean;
+  cursed?: boolean;   // purchasing this item drains all coins — the universe's tax
 }
 
 export type Category = "timepieces" | "leather-goods" | "automobiles" | "jewelry" | "yachts" | "shoes";
@@ -198,6 +199,7 @@ export const PRODUCTS: Product[] = [
     id: "bugatti-chiron",
     name: "Chiron Super Sport",
     brand: "Bugatti",
+    cursed: true,
     price: 37_05_00_000,   // $3,900,000
     category: "automobiles",
     image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=90",
@@ -314,6 +316,7 @@ export const PRODUCTS: Product[] = [
     id: "gulfstream-g700",
     name: "G700 Private Jet",
     brand: "Gulfstream",
+    cursed: true,
     price: 712_50_00_000,  // $75,000,000
     category: "yachts",
     image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=90",

@@ -4,11 +4,12 @@ import { Product, formatPrice } from "@/lib/products";
 import { useCartStore } from "@/lib/cart-store";
 import { useCoinsStore } from "@/lib/coins-store";
 import { useWalletStore, selectPlayerRank, getRequiredRank } from "@/lib/wallet-store";
+import { getFlashForProduct, FLASH_DISCOUNT } from "@/lib/flash-store";
 import { useCoinsToast } from "./CoinsToast";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { StarRating } from "./StarRating";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
@@ -23,6 +24,20 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   const requiredRank = getRequiredRank(product.price);
   const isLocked = playerRank.level < requiredRank.level;
 
+  const flash = getFlashForProduct(product.id);
+  const [flashTimeLeft, setFlashTimeLeft] = useState<number | null>(flash?.active ? flash.endMs - Date.now() : null);
+  const flashPrice = flash?.active ? Math.round(product.price * (1 - FLASH_DISCOUNT)) : null;
+
+  useEffect(() => {
+    if (!flash?.active) return;
+    const interval = setInterval(() => {
+      const left = flash.endMs - Date.now();
+      setFlashTimeLeft(left > 0 ? left : null);
+      if (left <= 0) clearInterval(interval);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [flash]);
+
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -31,15 +46,21 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     e.stopPropagation();
     if (isLocked) return;
     setAdding(true);
-    addItem(product);
-    const coins = earnAddToCart();
-    showToast(coins, "added to cart");
+    addItem(flashPrice ? { ...product, price: flashPrice } : product);
+    const result = earnAddToCart();
+    showToast(result.coins, result.label, result.isBonus);
     setTimeout(() => setAdding(false), 1000);
   };
 
   const handleView = () => {
-    const coins = markProductViewed(product.id);
-    if (coins > 0) showToast(coins, "product viewed");
+    const result = markProductViewed(product.id);
+    if (result && result.coins > 0) showToast(result.coins, result.label, result.isBonus);
+  };
+
+  const fmtCountdown = (ms: number) => {
+    const m = Math.floor(ms / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    return `${m}:${String(s).padStart(2, "0")}`;
   };
 
   const spendToUnlock = requiredRank.threshold - useWalletStore((s) => s.lifetimeSpent);
@@ -136,12 +157,17 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {/* Badges */}
             {!isLocked && (
               <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-30">
-                {product.exclusive && (
+                {flashPrice && flashTimeLeft && (
+                  <span className="px-2 py-0.5 bg-amber-500 text-[#080808] text-[9px] font-bold tracking-widest uppercase rounded-sm">
+                    ⚡ -{Math.round(FLASH_DISCOUNT * 100)}% · {fmtCountdown(flashTimeLeft)}
+                  </span>
+                )}
+                {product.exclusive && !flashPrice && (
                   <span className="px-2 py-0.5 bg-[#C9A84C] text-[#080808] text-[9px] font-bold tracking-widest uppercase rounded-sm">
                     Exclusive
                   </span>
                 )}
-                {product.badge && !product.exclusive && (
+                {product.badge && !product.exclusive && !flashPrice && (
                   <span className="px-2 py-0.5 bg-[#111]/90 border border-[#C9A84C]/50 text-[#C9A84C] text-[9px] tracking-widest uppercase rounded-sm">
                     {product.badge}
                   </span>
@@ -182,9 +208,16 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               <span className="text-[10px] text-[#555]">({product.reviews.toLocaleString()})</span>
             </div>
             <div className="flex items-center justify-between gap-1">
-              <span className={`font-display text-sm sm:text-lg font-semibold leading-tight ${isLocked ? "text-[#444]" : "text-gold-gradient"}`}>
-                {formatPrice(product.price)}
-              </span>
+              <div className="flex flex-col">
+                {flashPrice && (
+                  <span className="text-[9px] text-[#555] line-through leading-none">{formatPrice(product.price)}</span>
+                )}
+                <span className={`font-display text-sm sm:text-lg font-semibold leading-tight ${
+                  isLocked ? "text-[#444]" : flashPrice ? "text-amber-400" : "text-gold-gradient"
+                }`}>
+                  {formatPrice(flashPrice ?? product.price)}
+                </span>
+              </div>
               {isLocked ? (
                 <span
                   className="px-2 py-1 text-[9px] tracking-widest uppercase border rounded-sm flex-shrink-0"

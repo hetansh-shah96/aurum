@@ -48,9 +48,10 @@ export default function CheckoutPage() {
   const handlePay = () => {
     setProcessing(true);
     deduct(totalPrice);
+    const cursedItem = items.find((i) => i.product.cursed);
     setTimeout(() => {
       clearCart();
-      router.push("/order-confirmed");
+      router.push(cursedItem ? `/order-confirmed?cursed=${cursedItem.product.id}` : "/order-confirmed");
     }, 2800);
   };
 

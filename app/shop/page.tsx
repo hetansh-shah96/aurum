@@ -4,7 +4,9 @@ import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { PRODUCTS, CATEGORIES, Category, formatPrice } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
-import { useWalletStore, selectPlayerRank, RANKS } from "@/lib/wallet-store";
+import { MysteryCard } from "@/components/MysteryCard";
+import { useWalletStore, selectPlayerRank, RANKS, getRequiredRank } from "@/lib/wallet-store";
+import { initFlashes } from "@/lib/flash-store";
 import { motion, AnimatePresence } from "framer-motion";
 
 const TICKER_EVENTS = [
@@ -82,10 +84,7 @@ function RankBanner() {
   const playerRank = useWalletStore(selectPlayerRank);
   const lifetimeSpent = useWalletStore((s) => s.lifetimeSpent);
   const nextRank = RANKS.find((r) => r.level === playerRank.level + 1);
-  const lockedCount = PRODUCTS.filter((p) => {
-    const { getRequiredRank } = require("@/lib/wallet-store");
-    return getRequiredRank(p.price).level > playerRank.level;
-  }).length;
+  const lockedCount = PRODUCTS.filter((p) => getRequiredRank(p.price).level > playerRank.level).length;
 
   const progress = nextRank
     ? Math.min(1, (lifetimeSpent - playerRank.threshold) / (nextRank.threshold - playerRank.threshold))
@@ -136,6 +135,10 @@ function ShopContent() {
   const urlCategory = searchParams.get("category") as Category | null;
   const [active, setActive] = useState<Category | "all">(urlCategory ?? "all");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
+
+  useEffect(() => {
+    initFlashes(PRODUCTS.map((p) => p.id));
+  }, []);
 
   const filtered = PRODUCTS.filter((p) => active === "all" || p.category === active);
   const sorted = [...filtered].sort((a, b) => {
@@ -211,6 +214,8 @@ function ShopContent() {
             layout
             className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6"
           >
+            {/* Mystery Crate — first slot */}
+            {active === "all" && <MysteryCard />}
             {sorted.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} />
             ))}
