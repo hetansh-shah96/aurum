@@ -36,8 +36,8 @@ function ShopContent() {
 
       {/* Filters */}
       <div className="border-y border-[#2a2a2a] bg-[#0e0e0e] sticky top-16 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 overflow-x-auto">
-          <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 flex-1 no-scrollbar">
             <button
               onClick={() => setActive("all")}
               className={`px-4 py-1.5 text-xs tracking-widest uppercase rounded-sm transition-all ${
@@ -65,7 +65,7 @@ function ShopContent() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="bg-[#111] border border-[#2a2a2a] text-[#888] text-xs px-3 py-1.5 rounded-sm outline-none focus:border-[#C9A84C] flex-shrink-0"
+            className="bg-[#111] border border-[#2a2a2a] text-[#888] text-xs px-3 py-1.5 rounded-sm outline-none focus:border-[#C9A84C] flex-shrink-0 self-start sm:self-auto"
           >
             <option value="default">Featured</option>
             <option value="price-asc">Price: Low to High</option>
@@ -75,13 +75,13 @@ function ShopContent() {
       </div>
 
       {/* Grid */}
-      <div className="max-w-7xl mx-auto px-6 pt-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
         {sorted.length === 0 ? (
           <div className="text-center py-20 text-[#555]">No items found.</div>
         ) : (
           <motion.div
             layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6"
           >
             {sorted.map((product) => (
               <ProductCard key={product.id} product={product} />

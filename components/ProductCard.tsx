@@ -88,31 +88,31 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
 
           {/* Info */}
-          <div className="p-4">
-            <p className="text-[10px] text-[#C9A84C] tracking-[0.25em] uppercase mb-1">
+          <div className="p-3 sm:p-4">
+            <p className="text-[9px] sm:text-[10px] text-[#C9A84C] tracking-[0.2em] sm:tracking-[0.25em] uppercase mb-0.5 sm:mb-1 truncate">
               {product.brand}
             </p>
-            <h3 className="font-display text-base text-[#F5F0E8] leading-tight mb-2 group-hover:text-[#E8D5A3] transition-colors">
+            <h3 className="font-display text-sm sm:text-base text-[#F5F0E8] leading-tight mb-1.5 sm:mb-2 group-hover:text-[#E8D5A3] transition-colors line-clamp-2">
               {product.name}
             </h3>
-            <div className="flex items-center gap-2 mb-3">
+            <div className="hidden sm:flex items-center gap-2 mb-3">
               <StarRating rating={product.rating} small />
               <span className="text-[10px] text-[#555]">({product.reviews.toLocaleString()})</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="font-display text-lg text-gold-gradient font-semibold">
+            <div className="flex items-center justify-between gap-1">
+              <span className="font-display text-sm sm:text-lg text-gold-gradient font-semibold leading-tight">
                 {formatPrice(product.price)}
               </span>
               <motion.button
                 whileTap={{ scale: 0.92 }}
                 onClick={handleAdd}
-                className={`btn-shine px-3 py-1.5 text-[10px] font-semibold tracking-widest uppercase border rounded-sm transition-all duration-200 ${
+                className={`btn-shine px-2 sm:px-3 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-semibold tracking-widest uppercase border rounded-sm transition-all duration-200 flex-shrink-0 ${
                   adding
                     ? "border-[#C9A84C] bg-[#C9A84C]/10 text-[#C9A84C]"
                     : "border-[#2a2a2a] text-[#888] hover:border-[#C9A84C] hover:text-[#C9A84C]"
                 }`}
               >
-                {adding ? "✓ Added" : "+ Cart"}
+                {adding ? "✓" : "+ Cart"}
               </motion.button>
             </div>
           </div>

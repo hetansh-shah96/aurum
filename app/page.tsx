@@ -41,7 +41,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.3 }}
-            className="font-display text-6xl md:text-8xl font-semibold leading-none mb-6"
+            className="font-display text-5xl sm:text-6xl md:text-8xl font-semibold leading-none mb-6"
           >
             <span className="text-[#F5F0E8]">Indulge</span>
             <br />
@@ -51,7 +51,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="text-[#888] text-lg md:text-xl max-w-xl mx-auto mb-3 leading-relaxed"
+            className="text-[#888] text-base md:text-xl max-w-xl mx-auto mb-3 leading-relaxed px-2"
           >
             Browse the world's most exclusive luxury goods. Add to cart. Feel the rush.
             Nothing gets delivered — the dopamine is free.
@@ -72,13 +72,13 @@ export default function HomePage() {
           >
             <Link
               href="/shop"
-              className="btn-shine px-10 py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors duration-200"
+              className="btn-shine px-8 sm:px-10 py-3.5 sm:py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors duration-200"
             >
               Enter the Collection
             </Link>
             <button
               onClick={() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" })}
-              className="px-10 py-4 border border-[#2a2a2a] text-[#888] text-sm tracking-[0.2em] uppercase hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors duration-200"
+              className="px-8 sm:px-10 py-3.5 sm:py-4 border border-[#2a2a2a] text-[#888] text-sm tracking-[0.2em] uppercase hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors duration-200"
             >
               Explore Categories
             </button>
@@ -98,7 +98,7 @@ export default function HomePage() {
 
       {/* Stats bar */}
       <section className="border-y border-[#2a2a2a] bg-[#0e0e0e]">
-        <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {[
             { value: "$2.1B+", label: "Total value curated" },
             { value: "47,000+", label: "Items indulged" },
@@ -114,7 +114,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section id="categories" className="max-w-7xl mx-auto px-6 py-20">
+      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -122,9 +122,9 @@ export default function HomePage() {
           className="text-center mb-12"
         >
           <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-3">Browse by Category</p>
-          <h2 className="font-display text-4xl md:text-5xl text-[#F5F0E8]">The Collection</h2>
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-[#F5F0E8]">The Collection</h2>
         </motion.div>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
           {CATEGORIES.map((cat, i) => (
             <motion.div
               key={cat.id}
@@ -148,8 +148,8 @@ export default function HomePage() {
       </section>
 
       {/* Featured / Exclusive */}
-      <section className="max-w-7xl mx-auto px-6 pb-20">
-        <div className="flex items-end justify-between mb-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20">
+        <div className="flex items-end justify-between mb-8 sm:mb-10">
           <div>
             <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-2">Curated Selection</p>
             <h2 className="font-display text-4xl text-[#F5F0E8]">Exclusive Pieces</h2>
@@ -158,7 +158,7 @@ export default function HomePage() {
             View All →
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {FEATURED.map((product) => (
             <div key={product.id} className="relative">
               <ProductCard product={product} />
@@ -171,13 +171,13 @@ export default function HomePage() {
       </section>
 
       {/* Trending */}
-      <section className="bg-[#0a0a0a] border-t border-[#2a2a2a] py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
+      <section className="bg-[#0a0a0a] border-t border-[#2a2a2a] py-12 sm:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-12">
             <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-3">Most Desired</p>
-            <h2 className="font-display text-4xl md:text-5xl text-[#F5F0E8]">Trending Now</h2>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-[#F5F0E8]">Trending Now</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {TRENDING.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

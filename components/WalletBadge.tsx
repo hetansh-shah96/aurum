@@ -55,7 +55,7 @@ export function WalletBadge() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-72 bg-[#0e0e0e] border border-[#2a2a2a] rounded-sm shadow-2xl z-50 p-5"
+            className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] bg-[#0e0e0e] border border-[#2a2a2a] rounded-sm shadow-2xl z-50 p-5"
           >
             <p className="text-xs text-[#555] tracking-widest uppercase mb-1">Your Virtual Wallet</p>
             <p className="font-display text-2xl text-gold-gradient mb-4">{formatPrice(Math.max(0, projected))}</p>

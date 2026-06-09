@@ -56,7 +56,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         )}
       </AnimatePresence>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-[#555] mb-8 tracking-widest uppercase">
           <Link href="/" className="hover:text-[#C9A84C] transition-colors">Home</Link>
@@ -66,7 +66,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <span className="text-[#888]">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12 mb-12 sm:mb-20">
           {/* Images */}
           <div className="space-y-4">
             <motion.div
@@ -109,7 +109,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           {/* Details */}
           <div>
             <p className="text-xs text-[#C9A84C] tracking-[0.3em] uppercase mb-2">{product.brand}</p>
-            <h1 className="font-display text-4xl md:text-5xl text-[#F5F0E8] mb-4 leading-tight">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-[#F5F0E8] mb-4 leading-tight">
               {product.name}
             </h1>
 
@@ -129,7 +129,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               )}
             </div>
 
-            <div className="font-display text-5xl text-gold-gradient font-semibold mb-6">
+            <div className="font-display text-3xl sm:text-5xl text-gold-gradient font-semibold mb-6">
               {formatPrice(product.price)}
             </div>
 
@@ -147,15 +147,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
 
             {/* Perks */}
-            <div className="grid grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-3 mb-8">
               {[
                 { icon: "✈", label: "White-Glove Delivery" },
                 { icon: "🔒", label: "Insured Shipping" },
                 { icon: "♾", label: "Lifetime Guarantee" },
               ].map((p) => (
-                <div key={p.label} className="flex flex-col items-center gap-1 p-3 border border-[#2a2a2a] rounded-sm text-center">
-                  <span className="text-lg">{p.icon}</span>
-                  <span className="text-[9px] text-[#555] tracking-wider uppercase leading-tight">{p.label}</span>
+                <div key={p.label} className="flex flex-col items-center gap-1 p-2 sm:p-3 border border-[#2a2a2a] rounded-sm text-center">
+                  <span className="text-base sm:text-lg">{p.icon}</span>
+                  <span className="text-[8px] sm:text-[9px] text-[#555] tracking-wider uppercase leading-tight">{p.label}</span>
                 </div>
               ))}
             </div>

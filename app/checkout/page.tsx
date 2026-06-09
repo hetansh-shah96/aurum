@@ -64,7 +64,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen pt-20 pb-20">
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12">
           <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-2">Acquisition</p>
@@ -72,20 +72,16 @@ export default function CheckoutPage() {
         </div>
 
         {/* Progress */}
-        <div className="flex items-center justify-center gap-0 mb-12">
+        <div className="flex items-center justify-center mb-8 sm:mb-12">
           {STEPS.map((s, i) => (
             <div key={s} className="flex items-center">
               <div
-                className={`flex items-center gap-2 px-4 py-2 text-xs tracking-widest uppercase transition-all ${
-                  s === step
-                    ? "text-[#C9A84C]"
-                    : currentIdx > i
-                    ? "text-[#888]"
-                    : "text-[#333]"
+                className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs tracking-widest uppercase transition-all ${
+                  s === step ? "text-[#C9A84C]" : currentIdx > i ? "text-[#888]" : "text-[#333]"
                 }`}
               >
                 <span
-                  className={`w-5 h-5 rounded-full border text-xs flex items-center justify-center font-bold transition-all ${
+                  className={`w-6 h-6 sm:w-5 sm:h-5 rounded-full border text-xs flex items-center justify-center font-bold transition-all flex-shrink-0 ${
                     currentIdx > i
                       ? "border-[#C9A84C] bg-[#C9A84C] text-[#080808]"
                       : s === step
@@ -95,13 +91,18 @@ export default function CheckoutPage() {
                 >
                   {currentIdx > i ? "✓" : i + 1}
                 </span>
-                {STEP_LABELS[s]}
+                {/* Labels hidden on mobile, shown sm+ */}
+                <span className="hidden sm:inline">{STEP_LABELS[s]}</span>
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`w-12 h-px transition-colors ${currentIdx > i ? "bg-[#C9A84C]" : "bg-[#2a2a2a]"}`} />
+                <div className={`w-6 sm:w-12 h-px transition-colors ${currentIdx > i ? "bg-[#C9A84C]" : "bg-[#2a2a2a]"}`} />
               )}
             </div>
           ))}
+          {/* Mobile: show current step label below */}
+          <div className="sm:hidden absolute mt-14 text-xs text-[#C9A84C] tracking-widest uppercase">
+            {STEP_LABELS[step]}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
