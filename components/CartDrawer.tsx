@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQuantity } = useCartStore();
+  const { items, isOpen, closeCart, removeItem, updateQuantity, clearCart } = useCartStore();
   const totalPrice = useCartStore(selectTotalPrice);
   const totalCount = useCartStore(selectTotalCount);
 
@@ -42,14 +42,24 @@ export function CartDrawer() {
                   {totalCount} {totalCount === 1 ? "piece" : "pieces"}
                 </p>
               </div>
-              <button
-                onClick={closeCart}
-                className="w-8 h-8 flex items-center justify-center rounded-full border border-[#2a2a2a] hover:border-[#C9A84C] transition-colors"
-              >
-                <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <div className="flex items-center gap-2">
+              {items.length > 0 && (
+                  <button
+                    onClick={clearCart}
+                    className="text-[10px] text-[#555] tracking-widest uppercase hover:text-red-400 transition-colors px-1.5 py-1"
+                  >
+                    Clear all
+                  </button>
+                )}
+                <button
+                  onClick={closeCart}
+                  className="w-8 h-8 flex items-center justify-center rounded-full border border-[#2a2a2a] hover:border-[#C9A84C] transition-colors"
+                >
+                  <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Items */}

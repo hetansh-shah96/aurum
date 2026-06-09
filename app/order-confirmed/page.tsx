@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { useWalletStore } from "@/lib/wallet-store";
+import { useRouter } from "next/navigation";
 import { useCoinsStore } from "@/lib/coins-store";
 import { CursedModal } from "@/components/CursedModal";
 import { useCoinsToast } from "@/components/CoinsToast";
@@ -69,10 +70,14 @@ export default function OrderConfirmedPage() {
   const [progressPct, setProgressPct] = useState(0);
   const [notifStatus, setNotifStatus] = useState<"idle" | "granted" | "denied">("idle");
   const fired = useRef(false);
-  const { replenish, spent } = useWalletStore();
+  const router = useRouter();
+  const { replenish, spent, refund } = useWalletStore();
   const { earnCheckout, balance: coinBalance } = useCoinsStore();
   const { showToast } = useCoinsToast();
   const [cursedProductId, setCursedProductId] = useState<string | null>(null);
+  const [cancelSecsLeft, setCancelSecsLeft] = useState(60);
+  const [cancelled, setCancelled] = useState(false);
+  const [orderAmount, setOrderAmount] = useState(0);
 
   // Confetti on mount
   useEffect(() => {
@@ -90,22 +95,41 @@ export default function OrderConfirmedPage() {
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.5 }, colors, scalar: 1.2, startVelocity: 40 });
     }, 1200);
 
-    // Replenish wallet after "spending"
-    setTimeout(() => replenish(), 5000);
+    // Apply any pending drip (no instant refill anymore — wallet drips every 2h)
+    setTimeout(() => replenish(), 1000);
     const result = earnCheckout();
     showToast(result.coins, result.label, result.isBonus);
 
-    // Check for cursed items via URL
+    // Check for cursed items + order amount via URL
     const params = new URLSearchParams(window.location.search);
     const cursed = params.get("cursed");
+    const amount = parseInt(params.get("amount") ?? "0", 10);
+    if (amount) setOrderAmount(amount);
     if (cursed) {
       setTimeout(() => {
         setCursedProductId(cursed);
-        // Drain all coins after showing the modal
         useCoinsStore.setState({ balance: 0 });
       }, 3500);
     }
   }, [replenish, earnCheckout, showToast]);
+
+  // Cancel window countdown (60s)
+  useEffect(() => {
+    if (cancelled) return;
+    const id = setInterval(() => {
+      setCancelSecsLeft((s) => {
+        if (s <= 1) { clearInterval(id); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [cancelled]);
+
+  const handleCancelOrder = () => {
+    if (orderAmount > 0) refund(orderAmount);
+    setCancelled(true);
+    router.push("/shop");
+  };
 
   // Animate delivery steps (1 per 2s for demo feel)
   useEffect(() => {
@@ -374,6 +398,50 @@ export default function OrderConfirmedPage() {
           )}
         </AnimatePresence>
 
+        {/* Buyer's remorse cancel window */}
+        {!cancelled && orderAmount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5 }}
+            className="mb-5"
+          >
+            <AnimatePresence>
+              {cancelSecsLeft > 0 ? (
+                <motion.div
+                  key="cancel-open"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center justify-between gap-3 p-3 border border-[#2a2a2a] bg-[#0a0a0a] rounded-sm"
+                >
+                  <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                    <span className="text-lg flex-shrink-0">😬</span>
+                    <div className="min-w-0">
+                      <p className="text-xs text-[#555] leading-snug">Changed your mind?</p>
+                      <p className="text-[10px] text-[#444]">
+                        Refund window closes in <span className="text-[#888] font-mono tabular-nums">{cancelSecsLeft}s</span>
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCancelOrder}
+                    className="flex-shrink-0 px-3 py-1.5 border border-red-500/30 text-red-400/70 text-[10px] tracking-widest uppercase hover:bg-red-500/5 transition-colors rounded-sm"
+                  >
+                    Cancel & Refund
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.p
+                  key="cancel-closed"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="text-center text-[10px] text-[#333]"
+                >
+                  Refund window closed. No regrets allowed.
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+
         {/* Actions */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -402,8 +470,8 @@ export default function OrderConfirmedPage() {
           className="text-center text-xs text-[#333] mt-8 tracking-wide"
         >
           {spent > 0
-            ? `You've virtually spent ${formatPrice(spent)} on the finer things in life. Wallet replenished — go again!`
-            : "Your wallet has been replenished. Go again!"}
+            ? `You've spent ${formatPrice(spent)} on the finer things in life. Your wallet refills every 2 hours — or convert your coins.`
+            : "Your wallet refills every 2 hours. Earn coins daily to buy more."}
         </motion.p>
       </div>
     </div>

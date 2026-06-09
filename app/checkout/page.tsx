@@ -51,7 +51,8 @@ export default function CheckoutPage() {
     const cursedItem = items.find((i) => i.product.cursed);
     setTimeout(() => {
       clearCart();
-      router.push(cursedItem ? `/order-confirmed?cursed=${cursedItem.product.id}` : "/order-confirmed");
+      const base = `/order-confirmed?amount=${totalPrice}`;
+      router.push(cursedItem ? `${base}&cursed=${cursedItem.product.id}` : base);
     }, 2800);
   };
 
@@ -453,8 +454,8 @@ function WalletGate({
         <div className="border border-[#2a2a2a] rounded-sm p-4">
           <p className="text-xs font-semibold text-[#F5F0E8] mb-3">Or upgrade your wallet tier</p>
           <div className="space-y-2">
-            {(Object.entries(TIERS) as [keyof typeof TIERS, { label: string; balance: number }][])
-              .filter(([, t]) => t.balance > walletBalance)
+            {(Object.entries(TIERS) as [keyof typeof TIERS, typeof TIERS[keyof typeof TIERS]][])
+              .filter(([, t]) => t.maxBalance > walletBalance)
               .map(([key, t]) => (
                 <button
                   key={key}
@@ -462,7 +463,7 @@ function WalletGate({
                   className="w-full flex items-center justify-between px-3 py-2 border border-[#C9A84C]/30 bg-[#C9A84C]/5 text-xs hover:bg-[#C9A84C]/10 transition-colors rounded-sm"
                 >
                   <span className="text-[#C9A84C] font-semibold">{t.label}</span>
-                  <span className="text-[#888]">{formatPrice(t.balance)}</span>
+                  <span className="text-[#888]">{formatPrice(t.maxBalance)}</span>
                 </button>
               ))}
           </div>
