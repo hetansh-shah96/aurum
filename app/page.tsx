@@ -27,12 +27,34 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#080808]/60 via-[#080808]/40 to-[#080808]" />
         </div>
 
+        {/* HUD corner decorators */}
+        <div className="absolute top-24 left-6 sm:left-12 z-20 pointer-events-none">
+          <div className="w-8 h-8 border-t-2 border-l-2 border-[#00d4c8]/30" />
+        </div>
+        <div className="absolute top-24 right-6 sm:right-12 z-20 pointer-events-none">
+          <div className="w-8 h-8 border-t-2 border-r-2 border-[#00d4c8]/30" />
+        </div>
+        <div className="absolute bottom-32 left-6 sm:left-12 z-20 pointer-events-none">
+          <div className="w-8 h-8 border-b-2 border-l-2 border-[#00d4c8]/30" />
+        </div>
+        <div className="absolute bottom-32 right-6 sm:right-12 z-20 pointer-events-none">
+          <div className="w-8 h-8 border-b-2 border-r-2 border-[#00d4c8]/30" />
+        </div>
+
         {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="font-mono text-[#00d4c8]/50 text-[9px] tracking-[0.5em] uppercase mb-4"
+          >
+            // LUXURY_SIMULATION_v2.0 · PLAYER CONNECTED
+          </motion.p>
+          <motion.p
             initial={{ opacity: 0, letterSpacing: "0.5em" }}
             animate={{ opacity: 1, letterSpacing: "0.35em" }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
             className="text-[#C9A84C] text-xs tracking-[0.35em] uppercase mb-6 font-light"
           >
             The World's Finest Acquisitions
@@ -60,9 +82,9 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="text-[#555] text-sm mb-10 tracking-wide"
+            className="font-mono text-[#444] text-[10px] mb-10 tracking-widest"
           >
-            ✦ No real charges ✦ No actual delivery ✦ Pure luxury simulation
+            NO_CHARGES · NO_DELIVERY · PURE_DOPAMINE
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -72,15 +94,15 @@ export default function HomePage() {
           >
             <Link
               href="/shop"
-              className="btn-shine px-8 sm:px-10 py-3.5 sm:py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors duration-200"
+              className="btn-shine px-8 sm:px-10 py-3.5 sm:py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors duration-200 hud-cut-sm"
             >
-              Enter the Collection
+              ENTER THE COLLECTION
             </Link>
             <button
               onClick={() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" })}
-              className="px-8 sm:px-10 py-3.5 sm:py-4 border border-[#2a2a2a] text-[#888] text-sm tracking-[0.2em] uppercase hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors duration-200"
+              className="px-8 sm:px-10 py-3.5 sm:py-4 border border-[#2a2a2a] text-[#888] text-sm tracking-[0.2em] uppercase hover:border-[#00d4c8]/50 hover:text-[#00d4c8]/80 transition-colors duration-200 font-mono"
             >
-              Explore Categories
+              EXPLORE_CATEGORIES →
             </button>
           </motion.div>
         </div>

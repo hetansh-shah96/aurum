@@ -10,7 +10,6 @@ import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { StarRating } from "./StarRating";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const addItem = useCartStore((s) => s.addItem);
@@ -23,6 +22,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   const playerRank = useWalletStore(selectPlayerRank);
   const requiredRank = getRequiredRank(product.price);
   const isLocked = playerRank.level < requiredRank.level;
+  const lifetimeSpent = useWalletStore((s) => s.lifetimeSpent);
 
   const flash = getFlashForProduct(product.id);
   const [flashTimeLeft, setFlashTimeLeft] = useState<number | null>(flash?.active ? flash.endMs - Date.now() : null);
@@ -63,10 +63,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     return `${m}:${String(s).padStart(2, "0")}`;
   };
 
-  const spendToUnlock = requiredRank.threshold - useWalletStore((s) => s.lifetimeSpent);
-  const rankProgress = isLocked
-    ? Math.min(1, useWalletStore.getState().lifetimeSpent / requiredRank.threshold)
-    : 1;
+  const itemCode = product.id.slice(0, 6).toUpperCase();
 
   return (
     <motion.div
@@ -77,24 +74,29 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     >
       <Link href={`/product/${product.id}`} className="group block" onClick={handleView}>
         <div
-          className={`relative bg-[#111] border rounded-sm overflow-hidden transition-all duration-500 ${
+          className={`relative bg-[#0d0d0d] overflow-hidden transition-all duration-500 hud-cut ${
             isLocked
-              ? "border-[#222] opacity-80"
-              : "border-[#2a2a2a] group-hover:border-[#C9A84C]/50 group-hover:gold-glow"
+              ? "border border-[#1a1a1a] opacity-75"
+              : `border ${hovering ? "border-[#C9A84C]/60" : "border-[#252525]"} ${hovering ? "gold-glow" : ""}`
           }`}
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
         >
+          {/* Top-left HUD corner accent */}
+          <div className={`absolute top-0 left-0 w-3 h-3 z-30 border-t border-l ${isLocked ? "border-[#333]" : "border-[#C9A84C]/60"}`} />
+          {/* Bottom-right HUD corner accent */}
+          <div className={`absolute bottom-0 right-0 w-3 h-3 z-30 border-b border-r ${isLocked ? "border-[#333]" : "border-[#C9A84C]/60"}`} />
+
           {/* Image area */}
           <div className="relative aspect-square overflow-hidden">
-            {!loaded && <div className="absolute inset-0 bg-[#1a1a1a] animate-pulse" />}
+            {!loaded && <div className="absolute inset-0 bg-[#111] animate-pulse" />}
 
             {/* Cinematic reveal wipe */}
             <motion.div
               initial={{ scaleY: 1 }}
               animate={inView ? { scaleY: 0 } : { scaleY: 1 }}
               transition={{ duration: 0.7, delay: (index % 4) * 0.08 + 0.3, ease: [0.76, 0, 0.24, 1] }}
-              className="absolute inset-0 bg-[#111] z-10 origin-bottom"
+              className="absolute inset-0 bg-[#0d0d0d] z-10 origin-bottom"
             />
 
             {/* Ken Burns */}
@@ -111,7 +113,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                 src={product.image}
                 alt={product.name}
                 fill
-                className={`object-cover transition-all duration-500 ${isLocked ? "grayscale brightness-50" : ""}`}
+                className={`object-cover transition-all duration-500 ${isLocked ? "grayscale brightness-40" : ""}`}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 onLoad={() => setLoaded(true)}
               />
@@ -126,30 +128,32 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               />
             )}
 
-            {/* Lock overlay */}
+            {/* ═══ Lock overlay: ACCESS DENIED ═══ */}
             {isLocked && (
-              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#080808]/70">
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#080808]/80">
                 <div className="text-center px-3">
+                  <p className="font-mono text-[10px] text-[#ff3a3a]/80 tracking-[0.25em] mb-2">// ACCESS DENIED</p>
                   <div
-                    className="w-10 h-10 rounded-full border-2 flex items-center justify-center mx-auto mb-2"
+                    className="w-9 h-9 border flex items-center justify-center mx-auto mb-2"
                     style={{ borderColor: requiredRank.color, color: requiredRank.color }}
                   >
-                    <span className="text-lg">{requiredRank.icon}</span>
+                    <span className="text-base">{requiredRank.icon}</span>
                   </div>
-                  <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: requiredRank.color }}>
+                  <p className="text-[9px] font-semibold tracking-widest uppercase mb-1.5" style={{ color: requiredRank.color }}>
                     {requiredRank.name}
                   </p>
-                  <p className="text-[9px] text-[#888]">Spend {formatPrice(Math.max(0, requiredRank.threshold - useWalletStore.getState().lifetimeSpent))} more to unlock</p>
-                  {/* Rank progress bar */}
-                  <div className="mt-2 h-1 bg-[#333] rounded-full w-20 mx-auto overflow-hidden">
+                  <div className="h-0.5 bg-[#222] w-16 mx-auto overflow-hidden mb-1">
                     <div
-                      className="h-full rounded-full transition-all duration-700"
+                      className="h-full transition-all duration-700"
                       style={{
-                        width: `${Math.min(100, (useWalletStore.getState().lifetimeSpent / requiredRank.threshold) * 100)}%`,
-                        background: `linear-gradient(90deg, ${requiredRank.color}88, ${requiredRank.color})`,
+                        width: `${Math.min(100, (lifetimeSpent / requiredRank.threshold) * 100)}%`,
+                        background: requiredRank.color,
                       }}
                     />
                   </div>
+                  <p className="text-[8px] text-[#555] font-mono">
+                    {formatPrice(Math.max(0, requiredRank.threshold - lifetimeSpent))} TO UNLOCK
+                  </p>
                 </div>
               </div>
             )}
@@ -158,84 +162,94 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {!isLocked && (
               <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-30">
                 {flashPrice && flashTimeLeft && (
-                  <span className="px-2 py-0.5 bg-amber-500 text-[#080808] text-[9px] font-bold tracking-widest uppercase rounded-sm">
+                  <span className="px-2 py-0.5 bg-amber-500 text-[#080808] text-[9px] font-bold tracking-widest uppercase">
                     ⚡ -{Math.round(FLASH_DISCOUNT * 100)}% · {fmtCountdown(flashTimeLeft)}
                   </span>
                 )}
                 {product.exclusive && !flashPrice && (
-                  <span className="px-2 py-0.5 bg-[#C9A84C] text-[#080808] text-[9px] font-bold tracking-widest uppercase rounded-sm">
+                  <span className="px-2 py-0.5 bg-[#C9A84C] text-[#080808] text-[9px] font-bold tracking-widest uppercase">
                     Exclusive
                   </span>
                 )}
                 {product.badge && !product.exclusive && !flashPrice && (
-                  <span className="px-2 py-0.5 bg-[#111]/90 border border-[#C9A84C]/50 text-[#C9A84C] text-[9px] tracking-widest uppercase rounded-sm">
+                  <span className="px-2 py-0.5 bg-[#080808]/90 border border-[#C9A84C]/50 text-[#C9A84C] text-[9px] tracking-widest uppercase">
                     {product.badge}
                   </span>
                 )}
               </div>
             )}
 
+            {/* Item code — top right */}
+            <div className="absolute top-2 right-2.5 z-30">
+              <span className="font-mono text-[7px] text-[#333] tracking-widest">#{itemCode}</span>
+            </div>
+
             {product.inStock <= 2 && !isLocked && (
               <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 z-30">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 pulse-gold" />
-                <span className="text-[9px] text-amber-400 tracking-wider">Only {product.inStock} left</span>
+                <span className="text-[9px] text-amber-400 font-mono tracking-wider">ONLY {product.inStock} LEFT</span>
               </div>
             )}
 
-            {/* Quick add */}
+            {/* Quick add on hover */}
             {!isLocked && (
               <motion.button
                 animate={{ opacity: hovering ? 1 : 0, y: hovering ? 0 : 6 }}
                 transition={{ duration: 0.2 }}
                 onClick={handleAdd}
-                className="absolute bottom-2.5 right-2.5 px-3 py-1.5 bg-[#C9A84C] text-[#080808] text-[9px] font-bold tracking-widest uppercase rounded-sm z-30"
+                className="absolute bottom-2.5 right-2.5 px-3 py-1.5 bg-[#C9A84C] text-[#080808] text-[9px] font-bold tracking-widest uppercase z-30"
               >
-                {adding ? "Added ✓" : "Add to Cart"}
+                {adding ? "ACQUIRED ✓" : "ADD TO CART"}
               </motion.button>
             )}
           </div>
 
-          {/* Info */}
-          <div className="p-3 sm:p-4">
-            <p className={`text-[9px] sm:text-[10px] tracking-[0.2em] uppercase mb-0.5 sm:mb-1 truncate ${isLocked ? "text-[#555]" : "text-[#C9A84C]"}`}>
+          {/* Info panel */}
+          <div className="p-3">
+            {/* HUD data line */}
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className={`font-mono text-[8px] tracking-[0.2em] ${isLocked ? "text-[#333]" : "text-[#00d4c8]/60"}`}>
+                {product.category.toUpperCase()}
+              </span>
+              <div className="flex-1 h-px bg-[#1a1a1a]" />
+            </div>
+
+            <p className={`text-[9px] sm:text-[10px] tracking-[0.2em] uppercase mb-0.5 truncate ${isLocked ? "text-[#444]" : "text-[#C9A84C]"}`}>
               {product.brand}
             </p>
-            <h3 className={`font-display text-sm sm:text-base leading-tight mb-1.5 line-clamp-2 ${isLocked ? "text-[#444]" : "text-[#F5F0E8] group-hover:text-[#E8D5A3] transition-colors"}`}>
+            <h3 className={`font-display text-sm sm:text-base leading-tight mb-2 line-clamp-2 ${isLocked ? "text-[#333]" : "text-[#F5F0E8] group-hover:text-[#E8D5A3] transition-colors"}`}>
               {product.name}
             </h3>
-            <div className="hidden sm:flex items-center gap-2 mb-2">
-              <StarRating rating={product.rating} small />
-              <span className="text-[10px] text-[#555]">({product.reviews.toLocaleString()})</span>
-            </div>
+
             <div className="flex items-center justify-between gap-1">
               <div className="flex flex-col">
                 {flashPrice && (
-                  <span className="text-[9px] text-[#555] line-through leading-none">{formatPrice(product.price)}</span>
+                  <span className="text-[9px] text-[#555] line-through leading-none font-mono">{formatPrice(product.price)}</span>
                 )}
                 <span className={`font-display text-sm sm:text-lg font-semibold leading-tight ${
-                  isLocked ? "text-[#444]" : flashPrice ? "text-amber-400" : "text-gold-gradient"
+                  isLocked ? "text-[#333]" : flashPrice ? "text-amber-400" : "text-gold-gradient"
                 }`}>
                   {formatPrice(flashPrice ?? product.price)}
                 </span>
               </div>
               {isLocked ? (
                 <span
-                  className="px-2 py-1 text-[9px] tracking-widest uppercase border rounded-sm flex-shrink-0"
-                  style={{ borderColor: `${requiredRank.color}44`, color: requiredRank.color }}
+                  className="px-2 py-1 text-[8px] tracking-widest uppercase border font-mono flex-shrink-0"
+                  style={{ borderColor: `${requiredRank.color}44`, color: `${requiredRank.color}99` }}
                 >
-                  {requiredRank.icon} {requiredRank.name}
+                  LOCKED
                 </span>
               ) : (
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={handleAdd}
-                  className={`btn-shine px-2 sm:px-3 py-1 text-[9px] sm:text-[10px] font-semibold tracking-widest uppercase border rounded-sm transition-all duration-200 flex-shrink-0 ${
+                  className={`btn-shine px-2 sm:px-3 py-1 text-[9px] sm:text-[10px] font-semibold tracking-widest uppercase border transition-all duration-200 flex-shrink-0 font-mono ${
                     adding
                       ? "border-[#C9A84C] bg-[#C9A84C]/10 text-[#C9A84C]"
-                      : "border-[#2a2a2a] text-[#888] hover:border-[#C9A84C] hover:text-[#C9A84C]"
+                      : "border-[#2a2a2a] text-[#666] hover:border-[#C9A84C] hover:text-[#C9A84C]"
                   }`}
                 >
-                  {adding ? "✓" : "+ Cart"}
+                  {adding ? "✓" : "+ CART"}
                 </motion.button>
               )}
             </div>

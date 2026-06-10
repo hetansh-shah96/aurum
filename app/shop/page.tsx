@@ -26,7 +26,7 @@ function FomoStrip() {
   const [tickerIdx, setTickerIdx] = useState(0);
   const [viewers] = useState(() => 200 + Math.floor(Math.random() * 80));
   const [liveViewers, setLiveViewers] = useState(viewers);
-  const [timeLeft, setTimeLeft] = useState(7 * 60 + 41); // 7:41
+  const [timeLeft, setTimeLeft] = useState(7 * 60 + 41);
 
   useEffect(() => {
     const t = setInterval(() => setTickerIdx((i) => (i + 1) % TICKER_EVENTS.length), 4000);
@@ -45,35 +45,33 @@ function FomoStrip() {
   const secs = String(timeLeft % 60).padStart(2, "0");
 
   return (
-    <div className="border-b border-[#1a1a1a] bg-[#080808]">
-      {/* Top bar: live viewers + countdown */}
+    <div className="border-b border-[#1a1a1a] hud-bar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
-          <span className="text-[10px] text-[#888] tracking-wider">
-            <span className="text-[#F5F0E8] font-semibold">{liveViewers}</span> browsing now
+          <span className="w-1.5 h-1.5 rounded-full bg-[#ff3a3a] animate-pulse flex-shrink-0" />
+          <span className="font-mono text-[9px] text-[#555] tracking-widest uppercase">
+            LIVE · <span className="text-[#F5F0E8]">{liveViewers}</span>
           </span>
         </div>
 
-        {/* Scrolling ticker */}
         <div className="flex-1 overflow-hidden mx-2 sm:mx-6 hidden sm:block">
           <AnimatePresence mode="wait">
             <motion.p
               key={tickerIdx}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="text-[10px] text-[#555] text-center truncate"
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25 }}
+              className="font-mono text-[9px] text-[#444] text-center truncate tracking-wide"
             >
-              <span className="text-[#C9A84C]">✦</span> {TICKER_EVENTS[tickerIdx]}
+              <span className="text-[#00d4c8]/60">▶</span> {TICKER_EVENTS[tickerIdx]}
             </motion.p>
           </AnimatePresence>
         </div>
 
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          <span className="text-[9px] text-[#555] uppercase tracking-widest hidden sm:inline">Flash prices end</span>
-          <span className="text-xs font-mono text-amber-400 font-semibold tabular-nums">{mins}:{secs}</span>
+          <span className="font-mono text-[9px] text-[#444] uppercase tracking-widest hidden sm:inline">Flash ends</span>
+          <span className="font-mono text-xs text-amber-400 font-bold tabular-nums">{mins}:{secs}</span>
         </div>
       </div>
     </div>
@@ -91,38 +89,39 @@ function RankBanner() {
     : 1;
 
   return (
-    <div className="border-b border-[#1a1a1a] bg-[#0a0a0a]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-base" style={{ color: playerRank.color }}>{playerRank.icon}</span>
-          <span className="text-xs font-semibold" style={{ color: playerRank.color }}>{playerRank.name}</span>
+    <div className="border-b border-[#1a1a2a] bg-[#06060e]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center gap-3 sm:gap-4">
+        {/* Rank tag */}
+        <div className="flex items-center gap-1.5 flex-shrink-0 border border-[#1a1a2a] px-2 py-1">
+          <span className="font-mono text-[8px] text-[#444] tracking-widest">RANK</span>
+          <span className="font-semibold text-xs font-mono" style={{ color: playerRank.color }}>
+            {playerRank.icon} {playerRank.name.toUpperCase()}
+          </span>
         </div>
 
+        {/* XP bar */}
         {nextRank ? (
-          <div className="flex-1 flex items-center gap-3">
-            <div className="flex-1 h-1.5 bg-[#222] rounded-full overflow-hidden">
+          <div className="flex-1 flex items-center gap-2.5 min-w-0">
+            <span className="font-mono text-[8px] text-[#333] tracking-widest flex-shrink-0 hidden sm:inline">XP</span>
+            <div className="flex-1 h-1 bg-[#111] overflow-hidden relative">
               <motion.div
                 animate={{ width: `${progress * 100}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                className="h-full rounded-full"
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                className="absolute inset-y-0 left-0"
                 style={{ background: `linear-gradient(90deg, ${playerRank.color}, ${nextRank.color})` }}
               />
             </div>
-            <span className="text-[10px] text-[#555] flex-shrink-0 hidden sm:inline">
-              {formatPrice(Math.max(0, nextRank.threshold - lifetimeSpent))} to{" "}
-              <span style={{ color: nextRank.color }}>{nextRank.name}</span>
+            <span className="font-mono text-[8px] text-[#444] flex-shrink-0 hidden sm:inline">
+              {formatPrice(Math.max(0, nextRank.threshold - lifetimeSpent))} → <span style={{ color: nextRank.color }}>{nextRank.name.toUpperCase()}</span>
             </span>
           </div>
         ) : (
-          <span className="text-[10px] text-[#C9A84C] flex-shrink-0">✦ Max rank — all items unlocked</span>
+          <span className="font-mono text-[9px] text-[#C9A84C] flex-shrink-0">✦ MAX RANK ACHIEVED</span>
         )}
 
         {lockedCount > 0 && (
-          <div className="flex-shrink-0 flex items-center gap-1.5">
-            <span className="text-[9px] text-[#555] hidden sm:inline">
-              🔒 {lockedCount} items locked
-            </span>
-            <span className="text-[9px] text-[#555] sm:hidden">🔒 {lockedCount}</span>
+          <div className="flex-shrink-0 flex items-center gap-1 border border-[#ff3a3a]/20 px-2 py-1">
+            <span className="font-mono text-[8px] text-[#ff3a3a]/60 tracking-widest">🔒 {lockedCount} LOCKED</span>
           </div>
         )}
       </div>
@@ -153,15 +152,15 @@ function ShopContent() {
       <RankBanner />
 
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-6 pt-10 mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 mb-6">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-2">The Full Collection</p>
-          <h1 className="font-display text-5xl md:text-6xl text-[#F5F0E8] mb-2">Shop</h1>
-          <p className="text-[#555] text-sm">{sorted.length} pieces available</p>
+          <p className="font-mono text-[9px] text-[#00d4c8]/60 tracking-[0.4em] uppercase mb-1">// ITEM DATABASE</p>
+          <h1 className="font-display text-5xl md:text-6xl text-[#F5F0E8] mb-1">The Collection</h1>
+          <p className="font-mono text-[10px] text-[#444] tracking-widest">{sorted.length} ITEMS AVAILABLE · SESSION ACTIVE</p>
         </motion.div>
       </div>
 

@@ -6,11 +6,14 @@
   --gold-light: #E8D5A3;
   --gold-dark: #8B6914;
   --black: #080808;
-  --card: #111111;
-  --card-hover: #161616;
+  --card: #0d0d0d;
+  --card-hover: #131313;
   --border: #2a2a2a;
   --cream: #F5F0E8;
   --muted: #888888;
+  --cyan: #00d4c8;
+  --cyan-dim: #00d4c822;
+  --red-hud: #ff3a3a;
 }
 
 * { box-sizing: border-box; }
@@ -22,6 +25,34 @@ body {
   font-family: 'Libre Franklin', sans-serif;
   -webkit-font-smoothing: antialiased;
   letter-spacing: 0.01em;
+}
+
+/* Subtle scan-line overlay on the entire page */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.07) 3px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Subtle dot grid on the background */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.6;
 }
 
 .font-display { font-family: 'Cormorant Garamond', serif; }
@@ -41,17 +72,83 @@ body {
   background: linear-gradient(90deg, #C9A84C 0%, #E8D5A3 50%, #C9A84C 100%);
   background-size: 200% 100%;
   animation: shimmer 2.5s infinite linear;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--black); }
 ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
 
+/* Gold glows */
 .gold-glow { box-shadow: 0 0 24px rgba(201, 168, 76, 0.18); }
 .gold-glow-strong { box-shadow: 0 0 48px rgba(201, 168, 76, 0.35), 0 0 96px rgba(201, 168, 76, 0.1); }
+
+/* Cyan HUD glow */
+.hud-glow { box-shadow: 0 0 12px rgba(0, 212, 200, 0.2), inset 0 0 12px rgba(0, 212, 200, 0.04); }
+.hud-glow-strong { box-shadow: 0 0 24px rgba(0, 212, 200, 0.35), 0 0 48px rgba(0, 212, 200, 0.1); }
+
+/* ═══ HUD card: cut top-right corner ═══ */
+.hud-cut {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.hud-cut-sm {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+/* ═══ HUD corner brackets (decorative) ═══ */
+.hud-corners {
+  position: relative;
+}
+.hud-corners::before,
+.hud-corners::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  z-index: 10;
+  pointer-events: none;
+}
+.hud-corners::before {
+  top: -1px; left: -1px;
+  border-top: 1.5px solid var(--cyan);
+  border-left: 1.5px solid var(--cyan);
+}
+.hud-corners::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 1.5px solid var(--cyan);
+  border-right: 1.5px solid var(--cyan);
+}
+
+/* HUD corner gold variant */
+.hud-corners-gold::before {
+  border-color: var(--gold) !important;
+}
+.hud-corners-gold::after {
+  border-color: var(--gold) !important;
+}
+
+/* ═══ HUD tag line / label ═══ */
+.hud-label {
+  font-family: 'Libre Franklin', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  opacity: 0.7;
+}
+
+/* ═══ HUD status bar ═══ */
+.hud-bar {
+  background: linear-gradient(90deg, var(--black), #0d0d14, var(--black));
+  border-top: 1px solid #1a1a2a;
+  border-bottom: 1px solid #1a1a2a;
+}
+
+/* ═══ Animated neon pulse ═══ */
+@keyframes neon-pulse {
+  0%, 100% { opacity: 1; text-shadow: 0 0 6px var(--cyan), 0 0 12px var(--cyan); }
+  50% { opacity: 0.7; text-shadow: 0 0 2px var(--cyan); }
+}
+.neon-pulse { animation: neon-pulse 2.5s ease-in-out infinite; }
 
 @keyframes shine {
   0% { left: -100%; }
@@ -92,15 +189,17 @@ body {
 }
 .scale-in { animation: scaleIn 0.4s ease forwards; }
 
-/* Particle burst on add-to-cart */
-@keyframes burst {
-  0% { transform: translate(0,0) scale(1); opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
-}
-
 /* Hide scrollbar for filter chips */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* iOS safe area bottom (for bottom nav) */
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* HUD horizontal rule */
+.hud-rule {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan) 40%, var(--gold) 60%, transparent);
+  opacity: 0.25;
+}

@@ -4,16 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCartStore, selectTotalCount } from "@/lib/cart-store";
 import { useWalletStore, TIERS, DRIP_MS, selectPlayerRank } from "@/lib/wallet-store";
-import { useCoinsStore } from "@/lib/coins-store";
+import { useCoinsStore, selectCanClaim } from "@/lib/coins-store";
+import { useCoinsToast } from "./CoinsToast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { formatPrice } from "@/lib/products";
 
 function MobileWalletSheet({ onClose }: { onClose: () => void }) {
   const { balance, tier, setTier, lastReplenishTime, checkDrip, spent } = useWalletStore();
-  const { balance: coins } = useCoinsStore();
+  const { balance: coins, claimDaily, convertToWallet } = useCoinsStore();
+  const canClaim = useCoinsStore(selectCanClaim);
+  const { showToast } = useCoinsToast();
   const playerRank = useWalletStore(selectPlayerRank);
   const [msLeft, setMsLeft] = useState(0);
+  const [convertSuccess, setConvertSuccess] = useState(false);
 
   useEffect(() => {
     const tick = () => {
@@ -34,6 +38,23 @@ function MobileWalletSheet({ onClose }: { onClose: () => void }) {
   const s = Math.floor((msLeft % 60_000) / 1000);
   const countdown = `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   const isFull = balance >= maxBalance;
+
+  const handleClaim = () => {
+    const result = claimDaily();
+    if (result) showToast(result.coins, `Day ${result.streak} streak!`);
+  };
+
+  const handleConvert = () => {
+    if (coins < 10_000) return;
+    const amount = coins;
+    const ok = convertToWallet(amount);
+    if (ok) {
+      useWalletStore.setState((s) => ({ balance: Math.min(TIERS[s.tier].maxBalance, s.balance + amount) }));
+      showToast(amount, "converted to wallet!");
+      setConvertSuccess(true);
+      setTimeout(() => setConvertSuccess(false), 2000);
+    }
+  };
 
   return (
     <>
@@ -102,15 +123,38 @@ function MobileWalletSheet({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* AURUM Coins */}
-          <div className="flex items-center justify-between p-3 border border-[#2a2a2a] rounded-sm">
-            <div>
-              <p className="text-[9px] text-[#555] uppercase tracking-widest">AURUM Coins</p>
-              <p className="text-lg font-mono text-[#C9A84C] font-semibold">
-                ₳{coins >= 1_00_000 ? `${(coins / 1_00_000).toFixed(1)}L` : coins.toLocaleString("en-IN")}
-              </p>
+          {/* AURUM Coins + daily claim */}
+          <div className="border border-[#2a2a2a] rounded-sm overflow-hidden">
+            <div className="flex items-center justify-between p-3">
+              <div>
+                <p className="text-[9px] text-[#555] uppercase tracking-widest">AURUM Coins</p>
+                <p className="text-lg font-mono text-[#C9A84C] font-semibold">
+                  ₳{coins >= 1_00_000 ? `${(coins / 1_00_000).toFixed(1)}L` : coins.toLocaleString("en-IN")}
+                </p>
+              </div>
+              {canClaim ? (
+                <button
+                  onClick={handleClaim}
+                  className="btn-shine px-3 py-2 bg-[#C9A84C] text-[#080808] text-[10px] font-bold tracking-widest uppercase rounded-sm"
+                >
+                  🪙 Claim Daily
+                </button>
+              ) : (
+                <p className="text-[9px] text-[#444] text-right">✓ Claimed<br />today</p>
+              )}
             </div>
-            <p className="text-[10px] text-[#555] text-right">Convert coins<br />to wallet credit</p>
+            {coins >= 10_000 && (
+              <button
+                onClick={handleConvert}
+                className={`w-full py-2 text-[10px] tracking-widest uppercase transition-colors border-t border-[#2a2a2a] ${
+                  convertSuccess
+                    ? "bg-green-500/10 text-green-400"
+                    : "text-[#555] hover:text-[#C9A84C] hover:bg-[#C9A84C]/5"
+                }`}
+              >
+                {convertSuccess ? "✓ Coins added to wallet!" : `Convert ₳${coins >= 1_00_000 ? `${(coins / 1_00_000).toFixed(1)}L` : coins.toLocaleString("en-IN")} → Wallet`}
+              </button>
+            )}
           </div>
 
           {/* Tier switcher */}
@@ -174,7 +218,7 @@ export function BottomNav() {
 
   return (
     <>
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0a0a0a]/98 backdrop-blur-md border-t border-[#2a2a2a] safe-bottom">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#060608]/98 backdrop-blur-md border-t border-[#1a1a2a] safe-bottom">
         <div className="flex items-center px-2 py-1">
           {navLinks.map((link) => {
             const active = pathname === link.href || (link.href === "/shop" && pathname.startsWith("/shop"));

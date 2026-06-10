@@ -49,7 +49,7 @@ export function Navbar() {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled || menuOpen
-            ? "bg-[#080808]/98 backdrop-blur-md border-b border-[#2a2a2a]"
+            ? "bg-[#060608]/98 backdrop-blur-md border-b border-[#1a1a2a]"
             : "bg-transparent"
         }`}
       >
@@ -58,9 +58,15 @@ export function Navbar() {
           <Link
             href="/"
             onClick={() => setMenuOpen(false)}
-            className="font-display text-xl sm:text-2xl tracking-[0.3em] text-gold-gradient font-semibold flex-shrink-0"
+            className="flex items-center gap-2 flex-shrink-0"
           >
-            AURUM
+            <div className="relative">
+              <div className="absolute -top-0.5 -left-1 w-2 h-2 border-t border-l border-[#00d4c8]/50" />
+              <div className="absolute -bottom-0.5 -right-1 w-2 h-2 border-b border-r border-[#00d4c8]/50" />
+              <span className="font-display text-xl sm:text-2xl tracking-[0.3em] text-gold-gradient font-semibold">
+                AURUM
+              </span>
+            </div>
           </Link>
 
           {/* Desktop nav links */}
@@ -83,8 +89,8 @@ export function Navbar() {
               <CoinsDisplay />
             </div>
 
-            {/* Wallet — hidden on very small screens, shown sm+ */}
-            <div className="hidden sm:block">
+            {/* Wallet — desktop only */}
+            <div className="hidden md:block">
               <WalletBadge />
             </div>
 
@@ -148,11 +154,6 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed top-16 left-0 right-0 z-40 bg-[#080808]/98 backdrop-blur-md border-b border-[#2a2a2a] md:hidden"
           >
-            {/* Wallet + coins row on mobile */}
-            <div className="px-5 pt-4 pb-3 border-b border-[#2a2a2a] flex items-center gap-3">
-              <CoinsDisplay />
-              <WalletBadge />
-            </div>
             <nav className="px-5 py-4 flex flex-col gap-1">
               {NAV_LINKS.map((link) => (
                 <Link
