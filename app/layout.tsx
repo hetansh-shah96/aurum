@@ -8,6 +8,7 @@ import { CoinsToastProvider } from "@/components/CoinsToast";
 import { DailyClaimModal } from "@/components/DailyClaimModal";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { RankUpModal } from "@/components/RankUpModal";
+import { CursorTrail } from "@/components/CursorTrail";
 
 export const metadata: Metadata = {
   title: "AURUM — Luxury Without Limits",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <BottomNav />
           <LiveActivityFeed />
           <RankUpModal />
+          <CursorTrail />
         </CoinsToastProvider>
       </body>
     </html>
