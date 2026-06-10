@@ -20,6 +20,24 @@ const PALETTE = [
   { fill: "#ffffff", glow: "#C9A84C" },
 ];
 
+function spawnBurst(particles: Particle[], x: number, y: number, count: number, speed: number) {
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+    const v = speed * (0.5 + Math.random() * 0.8);
+    const swatch = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+    particles.push({
+      x: x + (Math.random() - 0.5) * 4,
+      y: y + (Math.random() - 0.5) * 4,
+      alpha: 0.8 + Math.random() * 0.2,
+      size: 1.5 + Math.random() * 3,
+      vx: Math.cos(angle) * v,
+      vy: Math.sin(angle) * v,
+      color: swatch.fill,
+      glow: swatch.glow,
+    });
+  }
+}
+
 export function CursorTrail() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
@@ -27,9 +45,6 @@ export function CursorTrail() {
   const raf = useRef<number>(0);
 
   useEffect(() => {
-    // Skip on touch-only devices
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -42,32 +57,43 @@ export function CursorTrail() {
     resize();
     window.addEventListener("resize", resize);
 
-    const onMove = (e: MouseEvent) => {
+    // ── Desktop: comet trail ──────────────────────────────────────────────
+    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (isCoarse) return;
       const dx = e.clientX - prev.current.x;
       const dy = e.clientY - prev.current.y;
       const speed = Math.sqrt(dx * dx + dy * dy);
       prev.current = { x: e.clientX, y: e.clientY };
 
       const count = Math.min(8, Math.ceil(speed * 0.3) + 2);
-
       for (let i = 0; i < count; i++) {
         const swatch = PALETTE[Math.floor(Math.random() * PALETTE.length)];
-        // bias velocity opposite to cursor direction (trail falls behind)
-        const spread = 0.6;
         particles.current.push({
           x: e.clientX + (Math.random() - 0.5) * 3,
           y: e.clientY + (Math.random() - 0.5) * 3,
           alpha: 0.7 + Math.random() * 0.3,
           size: 1.8 + Math.random() * 2.8,
-          vx: -(dx * 0.08) + (Math.random() - 0.5) * spread,
-          vy: -(dy * 0.08) + (Math.random() - 0.5) * spread + 0.2,
+          vx: -(dx * 0.08) + (Math.random() - 0.5) * 0.6,
+          vy: -(dy * 0.08) + (Math.random() - 0.5) * 0.6 + 0.2,
           color: swatch.fill,
           glow: swatch.glow,
         });
       }
     };
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMouseMove);
 
+    // ── Mobile: radial burst on tap ───────────────────────────────────────
+    const onTouchStart = (e: TouchEvent) => {
+      for (let t = 0; t < e.changedTouches.length; t++) {
+        const touch = e.changedTouches[t];
+        spawnBurst(particles.current, touch.clientX, touch.clientY, 18, 3.5);
+      }
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+
+    // ── Render loop ───────────────────────────────────────────────────────
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -86,13 +112,11 @@ export function CursorTrail() {
 
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.04;          // gentle gravity
+        p.vy += 0.04;
         p.alpha *= 0.87;
         p.size  *= 0.96;
 
-        if (p.alpha < 0.015) {
-          particles.current.splice(i, 1);
-        }
+        if (p.alpha < 0.015) particles.current.splice(i, 1);
       }
 
       raf.current = requestAnimationFrame(animate);
@@ -101,7 +125,8 @@ export function CursorTrail() {
 
     return () => {
       window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchstart", onTouchStart);
       cancelAnimationFrame(raf.current);
     };
   }, []);

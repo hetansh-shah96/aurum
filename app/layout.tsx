@@ -9,10 +9,20 @@ import { DailyClaimModal } from "@/components/DailyClaimModal";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { RankUpModal } from "@/components/RankUpModal";
 import { CursorTrail } from "@/components/CursorTrail";
+import { InstallPrompt } from "@/components/InstallPrompt";
 
 export const metadata: Metadata = {
   title: "AURUM — Luxury Without Limits",
   description: "Browse the world's most exclusive luxury goods. Add to cart. Indulge freely. Nothing gets delivered.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "AURUM",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -29,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <LiveActivityFeed />
           <RankUpModal />
           <CursorTrail />
+          <InstallPrompt />
         </CoinsToastProvider>
       </body>
     </html>

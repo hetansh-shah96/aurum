@@ -119,7 +119,7 @@ export function CartDrawer() {
                             +
                           </button>
                           <button
-                            onClick={() => removeItem(item.product.id)}
+                            onClick={() => { navigator.vibrate?.(15); removeItem(item.product.id); }}
                             className="ml-auto text-xs text-[#555] hover:text-red-400 transition-colors"
                           >
                             Remove

@@ -46,6 +46,7 @@ export default function CheckoutPage() {
   };
 
   const handlePay = () => {
+    navigator.vibrate?.([20, 60, 40]);
     setProcessing(true);
     deduct(totalPrice);
     const cursedItem = items.find((i) => i.product.cursed);

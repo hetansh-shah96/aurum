@@ -45,6 +45,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     e.preventDefault();
     e.stopPropagation();
     if (isLocked) return;
+    navigator.vibrate?.(30);
     setAdding(true);
     addItem(flashPrice ? { ...product, price: flashPrice } : product);
     const result = earnAddToCart();
