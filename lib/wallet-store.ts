@@ -5,19 +5,19 @@ const DRIP_MS = 2 * 60 * 60 * 1000; // 2 hours
 
 // Every 2 hours, dripAmount is added up to maxBalance
 const TIERS = {
-  millionaire: { label: "Crorepati",    maxBalance: 2_00_000,    dripAmount: 50_000 },
-  "old-money":  { label: "Old Money",   maxBalance: 20_00_000,   dripAmount: 3_00_000 },
-  billionaire:  { label: "Ambani Mode", maxBalance: 1_00_00_000, dripAmount: 20_00_000 },
+  millionaire: { label: "Crorepati",    maxBalance: 1_00_00_000,   dripAmount: 10_00_000 },   // ₹1Cr max
+  "old-money":  { label: "Old Money",   maxBalance: 10_00_00_000,  dripAmount: 1_00_00_000 }, // ₹10Cr max
+  billionaire:  { label: "Ambani Mode", maxBalance: 100_00_00_000, dripAmount: 10_00_00_000 },// ₹100Cr max
 };
 
 export type Tier = keyof typeof TIERS;
 
 // Player rank — unlocks higher-priced products
 export const RANKS = [
-  { level: 0, name: "Newcomer",  icon: "○", color: "#666666", threshold: 0,          maxPrice: 10_00_000,     nextThreshold: 5_00_000 },
-  { level: 1, name: "Aspirant",  icon: "◎", color: "#C9A84C", threshold: 5_00_000,   maxPrice: 1_00_00_000,   nextThreshold: 50_00_000 },
-  { level: 2, name: "Collector", icon: "◈", color: "#E8D5A3", threshold: 50_00_000,  maxPrice: 10_00_00_000,  nextThreshold: 5_00_00_000 },
-  { level: 3, name: "Maison",    icon: "♦", color: "#FFD700", threshold: 5_00_00_000, maxPrice: Infinity,     nextThreshold: null },
+  { level: 0, name: "Newcomer",  icon: "○", color: "#666666", threshold: 0,              maxPrice: 5_00_00_000,   nextThreshold: 1_00_00_000 },   // ₹5Cr — unlocks almost everything
+  { level: 1, name: "Aspirant",  icon: "◎", color: "#C9A84C", threshold: 1_00_00_000,    maxPrice: 50_00_00_000,  nextThreshold: 10_00_00_000 },  // ₹50Cr
+  { level: 2, name: "Collector", icon: "◈", color: "#E8D5A3", threshold: 10_00_00_000,   maxPrice: 500_00_00_000, nextThreshold: 1_00_00_00_000 },// ₹500Cr
+  { level: 3, name: "Maison",    icon: "♦", color: "#FFD700", threshold: 1_00_00_00_000, maxPrice: Infinity,      nextThreshold: null },
 ] as const;
 
 export type Rank = (typeof RANKS)[number];

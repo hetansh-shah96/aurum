@@ -23,7 +23,7 @@ const CARD_FORMATS = [
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart } = useCartStore();
+  const { items, clearCart, openCart } = useCartStore();
   const totalPrice = useCartStore(selectTotalPrice);
   const { balance: walletBalance, deduct, setTier } = useWalletStore();
   const { balance: coins, convertToWallet } = useCoinsStore();
@@ -43,6 +43,11 @@ export default function CheckoutPage() {
   const handleNext = () => {
     const idx = STEPS.indexOf(step);
     if (idx < STEPS.length - 1) setStep(STEPS[idx + 1]);
+  };
+
+  const handleBack = () => {
+    const idx = STEPS.indexOf(step);
+    if (idx > 0) setStep(STEPS[idx - 1]);
   };
 
   const handlePay = () => {
@@ -166,12 +171,20 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                   </div>
-                  <button
-                    onClick={handleNext}
-                    className="btn-shine w-full py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors"
-                  >
-                    Continue to Payment →
-                  </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={openCart}
+                      className="px-5 py-4 border border-[#2a2a2a] text-[#888] text-sm tracking-[0.15em] uppercase hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors whitespace-nowrap"
+                    >
+                      ← Edit Cart
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="btn-shine flex-1 py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors"
+                    >
+                      Continue to Payment →
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
@@ -227,12 +240,20 @@ export default function CheckoutPage() {
                       <span className="text-xs text-green-400/80">256-bit SSL encrypted · No real charges ever</span>
                     </div>
                   </div>
-                  <button
-                    onClick={handleNext}
-                    className="btn-shine w-full py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors"
-                  >
-                    Review Order →
-                  </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleBack}
+                      className="px-5 py-4 border border-[#2a2a2a] text-[#888] text-sm tracking-[0.15em] uppercase hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors whitespace-nowrap"
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="btn-shine flex-1 py-4 bg-[#C9A84C] text-[#080808] text-sm font-semibold tracking-[0.2em] uppercase hover:bg-[#E8D5A3] transition-colors"
+                    >
+                      Review Order →
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
@@ -276,6 +297,13 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                   </div>
+
+                  <button
+                    onClick={handleBack}
+                    className="w-full py-3 border border-[#2a2a2a] text-[#555] text-xs tracking-[0.2em] uppercase hover:border-[#C9A84C] hover:text-[#888] transition-colors mb-2"
+                  >
+                    ← Back to Payment
+                  </button>
 
                   {walletBalance < totalPrice ? (
                     <WalletGate

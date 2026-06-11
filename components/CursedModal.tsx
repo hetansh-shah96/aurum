@@ -33,6 +33,54 @@ const PRINCE_SCRIPTS: Record<string, {
     ],
     signoff: "With warmest regards and God's blessing,\nChief Barrister Emeka Nwosu (Esq.)\nP.S. Please do not Google us.",
   },
+  "jacob-co-astronomia": {
+    subject: "URGENT: Your Jacob & Co. Watch Has Disrupted the Space-Time Continuum",
+    salutation: "Dear Esteemed Timepiece Collector,",
+    body: [
+      "I am DR. KOFI ASANTE-MENSAH, Senior Director of the Pan-African Institute for Temporal Anomalies.",
+      "Your Jacob & Co. Astronomia Solar is rotating at 1,400% above its permitted cosmological threshold.",
+      "Nearby satellites have been confused. Two horoscopes have been invalidated. Mercury is now permanently in retrograde.",
+      "As a stabilisation fee, your AURUM Coins have been diverted to recalibrate Earth's rotation.",
+      "The watch is fine. Time itself is less fine. We are working on it.",
+    ],
+    signoff: "Temporally yours,\nDr. Kofi Asante-Mensah, PhD (Horology), PhD (Chaos)\nP.S. Your Tuesday is now a Wednesday. We regret the inconvenience.",
+  },
+  "hermes-himalayan-birkin": {
+    subject: "RE: Your Himalayan Birkin — A Delicate Matter of Fashion Law",
+    salutation: "Dear Most Fashionable Acquirer,",
+    body: [
+      "I am MAITRE PIERRE-OLUSEGUN FONTAINE, Barrister-at-Law, Paris Fashion Bar Association.",
+      "The Himalayan Birkin you have acquired is subject to an outstanding FASHION LIEN filed by 847 women on global waitlists since 2019.",
+      "French Fashion Law Article 12(b) requires a Solidarity Tax of ALL AURUM COINS payable immediately.",
+      "Do not resist. The bag knows. It always knows.",
+      "Your coins have been redirected to the Paris Emergency Waitlist Relief Fund. Merci.",
+    ],
+    signoff: "Avec mes salutations distinguées,\nMaître Pierre-Olusegun Fontaine\nP.S. The crocodile sends its regards. It is also not happy.",
+  },
+  "graff-pink-diamond": {
+    subject: "PRIVATE & CONFIDENTIAL — Your Pink Diamond Has Been Noticed",
+    salutation: "To the New Owner of the Graff Pink,",
+    body: [
+      "I am COMMANDER IBRAHIM OSEI-BONSU, Director of Interpol's Diamond Intelligence Unit (West Africa Division).",
+      "The Graff Pink Diamond is registered in 14 international databases as a COSMICALLY CURSED GEMSTONE.",
+      "Three previous owners reported: unexplained wealth, suspicious good luck, and once, a very confusing Tuesday.",
+      "As per the Gemstone Cursedness Protocol (Geneva 1987), your AURUM Coins have been seized as a precautionary measure.",
+      "You may keep the diamond. The coins, however, belong to the universe now.",
+    ],
+    signoff: "Yours in diamantine authority,\nCommander Ibrahim Osei-Bonsu\nP.S. The stone is watching you read this. Smile.",
+  },
+  "yeezy-red-october": {
+    subject: "YO — About Those Sneakers (Read This)",
+    salutation: "Sup,",
+    body: [
+      "It's me. You know who this is. THE GREATEST ARTIST OF ALL TIME.",
+      "Those Red Octobers belong to the UNIVERSE. I dropped them at 3:14am for a REASON. That time is SACRED.",
+      "The chaos energy embedded in the shoe has already begun transferring. Your coins? Gone. Absorbed by the creative process.",
+      "I tried to warn everyone. The shoe gives. The shoe also takes.",
+      "Stay creative. Stay humble. Or don't. I never did.",
+    ],
+    signoff: "Ye\nP.S. My next album drops this Thursday. Or maybe never. Both are correct.",
+  },
 };
 
 const GENERIC_PRINCE = {
